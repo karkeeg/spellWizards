@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Syne } from "next/font/google";
 import "./globals.css";
+import Providers from "@/lib/providers";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -16,7 +17,8 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: "SpellWizards - Epic Spelling Adventure",
-  description: "Master spelling through game-based learning and fun challenges.",
+  description:
+    "Master spelling through game-based learning and fun challenges.",
 };
 
 export default function RootLayout({
@@ -26,10 +28,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${poppins.variable} ${syne.variable} antialiased`}
-      >
-        {children}
+      <body className={`${poppins.variable} ${syne.variable} antialiased`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

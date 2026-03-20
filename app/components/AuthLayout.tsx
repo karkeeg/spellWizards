@@ -7,7 +7,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen w-full relative bg-white flex flex-col font-poppins overflow-hidden">
+    <div className="min-h-screen w-full mx-auto relative bg-white flex flex-col font-poppins overflow-hidden">
       {/* Background Radial Gradient */}
       <div
         className="absolute inset-0 pointer-events-none opacity-40"

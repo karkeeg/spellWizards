@@ -1,38 +1,39 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
-import AuthLayout from "../components/AuthLayout";
-import { WandIcon } from "../components/WandIcon";
+import { useState, useEffect, Suspense } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { WandIcon } from "@/app/components/WandIcon";
+import AuthLayout from "@/app/components/AuthLayout";
+import { useLogin } from "@/hooks/use-auth";
 
-function SignupForm() {
+function AuthForm() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
+  const { mutate: login, isPending, error } = useLogin();
+
+  // Read email from sessionStorage (set by login page)
   useEffect(() => {
-    const emailParam = searchParams.get("email");
-    if (emailParam) {
-      setEmail(emailParam);
+    const savedEmail = sessionStorage.getItem("auth_email");
+    if (savedEmail) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setEmail(savedEmail);
     }
   }, [searchParams]);
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (!password) return;
-    setIsLoading(true);
-    // Mock processing time
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    window.location.href = "/onboarding";
+    login({ email, password });
   };
 
   return (
     <div className="max-w-lg flex flex-col items-center p-4 shadow-lg text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
       <WandIcon className="w-12 h-12 mb-2" />
 
-      <h1 className="text-[24px] font-semibold text-[#1A0533] ">
+      <h1 className="text-[24px] font-semibold text-[#1A0533]">
         Create your Account
       </h1>
       <p className="text-gray-500 mb-2 text-md">
@@ -40,6 +41,7 @@ function SignupForm() {
       </p>
 
       <div className="w-[80%] space-y-4">
+        {/* Email */}
         <div className="text-left space-y-1.5">
           <label className="text-sm font-semibold text-gray-700">Email</label>
           <div className="relative">
@@ -58,7 +60,8 @@ function SignupForm() {
           </div>
         </div>
 
-        <div className="text-left space-y-1.2">
+        {/* Password */}
+        <div className="text-left space-y-1.5">
           <label className="text-sm font-semibold text-gray-700">
             Password
           </label>
@@ -79,16 +82,24 @@ function SignupForm() {
           </div>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <p className="text-sm text-red-500 text-left">
+            {error.message || "Invalid email or password. Please try again."}
+          </p>
+        )}
+
+        {/* Submit */}
         <button
           onClick={handleContinue}
-          disabled={isLoading || !password}
+          disabled={isPending || !password}
           className={`w-full h-12 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
-            isLoading || !password
+            isPending || !password
               ? "bg-[#C4B5FD] cursor-not-allowed opacity-70"
               : "bg-[#7C3AED] hover:bg-[#6D28D9] shadow-lg shadow-purple-100"
           } text-white`}
         >
-          {isLoading ? (
+          {isPending ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               Processing...
@@ -113,7 +124,7 @@ export default function SignupPage() {
   return (
     <AuthLayout>
       <Suspense fallback={<div>Loading...</div>}>
-        <SignupForm />
+        <AuthForm />
       </Suspense>
     </AuthLayout>
   );

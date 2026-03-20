@@ -12,9 +12,10 @@ export default function LoginPage() {
   const handleContinue = async () => {
     if (!email.includes("@")) return;
     setIsLoading(true);
-    // Mock processing time
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    window.location.href = "/onboarding";
+
+    sessionStorage.setItem("auth_email", email);
+    window.location.href = "/login/password";
   };
 
   return (
@@ -62,9 +63,9 @@ export default function LoginPage() {
         </div>
 
         <div className="w-[70%] flex items-center gap-4 mb-4">
-          <div className="h-[1px] flex-1 bg-gray-200"></div>
+          <div className="h-px flex-1 bg-gray-200"></div>
           <span className="text-sm text-gray-400">Or</span>
-          <div className="h-[1px] flex-1 bg-gray-200"></div>
+          <div className="h-px flex-1 bg-gray-200"></div>
         </div>
 
         <div className="w-[80%] space-y-4">

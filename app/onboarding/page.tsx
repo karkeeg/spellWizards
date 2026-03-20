@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { WandIcon } from "../components/WandIcon";
+import { useState } from "react";
+import { useUpdateParent } from "@/hooks/use-parent";
 import {
-  ChevronLeft,
   Plus,
   Minus,
-  Search,
   Sparkles,
   BookOpen,
   Clock,
@@ -15,6 +12,7 @@ import {
   Star,
   CheckCircle2,
 } from "lucide-react";
+import { WandIcon } from "../components/WandIcon";
 import AuthLayout from "../components/AuthLayout";
 
 type OnboardingStep = 1 | 2 | 3 | 4 | 5;
@@ -27,25 +25,10 @@ interface ChildInfo {
   interests: string[];
 }
 
-export default function OnboardingPage() {
-  const [step, setStep] = useState<OnboardingStep>(1);
-  const [parentName, setParentName] = useState("");
-  const [childCount, setChildCount] = useState(1);
-  const [childInfo, setChildInfo] = useState<ChildInfo>({
-    firstName: "",
-    age: "",
-    gradeLevel: "",
-    spellingLevel: "",
-    interests: [],
-  });
-
-  const nextStep = () =>
-    setStep((prev) => (prev < 5 ? ((prev + 1) as OnboardingStep) : prev));
-  const prevStep = () =>
-    setStep((prev) => (prev > 1 ? ((prev - 1) as OnboardingStep) : prev));
-
-  const ProgressBar = () => (
-    <div className="w-full max-w-[420px] mb-6">
+// ProgressBar
+function ProgressBar({ step }: { step: number }) {
+  return (
+    <div className="w-full max-w-105 mx-auto mb-6">
       <div className="flex justify-between items-center relative px-2">
         {[1, 2, 3, 4, 5].map((s) => (
           <div key={s} className="flex flex-col items-center z-10">
@@ -60,27 +43,41 @@ export default function OnboardingPage() {
             </div>
           </div>
         ))}
-        {/* Progress Background Line */}
-        <div className="absolute top-[14px] left-0 right-0 h-[2px] bg-[#F3F0FF] -z-0" />
-        {/* Active Progress Line */}
+        <div className="absolute top-3.5 left-0 right-0 h-0.5 bg-[#F3F0FF] z-0" />
         <div
-          className="absolute top-[14px] left-0 h-[2px] bg-[#7C3AED] transition-all duration-300 -z-0"
+          className="absolute top-3.5 left-0 h-0.5 bg-[#7C3AED] transition-all duration-300 z-0"
           style={{ width: `${((step - 1) / 4) * 100}%` }}
         />
       </div>
     </div>
   );
+}
 
-  const Step1 = () => (
+// Step 1
+function Step1({
+  parentName,
+  setParentName,
+  onNext,
+}: {
+  parentName: string;
+  setParentName: (v: string) => void;
+  onNext: () => void;
+}) {
+  const { mutate: updateParent, isPending, error } = useUpdateParent();
+
+  const handleContinue = () => {
+    if (!parentName.trim()) return;
+    updateParent({ parent_name: parentName }, { onSuccess: () => onNext() });
+  };
+
+  return (
     <div className="flex flex-col items-center p-2 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="">
-        <WandIcon className="w-12 h-12 text-[#7C3AED]" />
-      </div>
+      <WandIcon className="w-12 h-12 text-[#7C3AED]" />
       <h1 className="text-2xl font-bold text-[#1A0533] mb-1">
         Welcome to Spell Wizards!
       </h1>
       <p className="text-xs text-gray-400 mb-4 max-w-s">
-        Let's personalize your child's magical spelling journey. This will only
+        Let&apos;s personalize your child&apos;s magical spelling journey. This will only
         take a moment.
       </p>
 
@@ -97,6 +94,12 @@ export default function OnboardingPage() {
         />
       </div>
 
+      {error && (
+        <p className="text-[11px] text-red-500 mb-2">
+          Something went wrong. Please try again.
+        </p>
+      )}
+
       <div className="w-full bg-[#F5F3FF] p-2 rounded-xl flex items-start gap-3 mb-3 text-left">
         <div className="mt-0.5">
           <Clock className="w-4 h-4 text-[#7C3AED]" />
@@ -108,16 +111,38 @@ export default function OnboardingPage() {
       </div>
 
       <button
-        onClick={nextStep}
-        disabled={!parentName.trim()}
-        className="w-[40%] h-11 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
+        onClick={handleContinue}
+        disabled={!parentName.trim() || isPending}
+        className="w-[40%] h-11 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm flex items-center justify-center gap-2"
       >
-        Continue
+        {isPending ? (
+          <>
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            Saving...
+          </>
+        ) : (
+          "Continue"
+        )}
       </button>
     </div>
   );
+}
 
-  const Step2 = () => (
+// Step 2
+function Step2({
+  parentName,
+  childCount,
+  setChildCount,
+  onNext,
+  onPrev,
+}: {
+  parentName: string;
+  childCount: number;
+  setChildCount: (v: number) => void;
+  onNext: () => void;
+  onPrev: () => void;
+}) {
+  return (
     <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
       <h1 className="text-2xl font-bold text-[#1A0533] mb-1">
         Hi {parentName}! 👋
@@ -133,7 +158,7 @@ export default function OnboardingPage() {
         >
           <Minus className="w-5 h-5" />
         </button>
-        <div className="text-center min-w-[60px]">
+        <div className="text-center min-w-15 mx-auto">
           <div className="text-3xl font-bold text-[#7C3AED] leading-none">
             {childCount}
           </div>
@@ -178,27 +203,40 @@ export default function OnboardingPage() {
 
       <div className="flex w-full gap-3">
         <button
-          onClick={prevStep}
+          onClick={onPrev}
           className="flex-1 h-11 bg-white border border-gray-200 text-[#1A0533] rounded-xl font-bold transition-all text-sm"
         >
           Back
         </button>
         <button
-          onClick={nextStep}
-          className="flex-[2] h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
+          onClick={onNext}
+          className="flex-2 h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
         >
           Continue
         </button>
       </div>
     </div>
   );
+}
 
-  const Step3 = () => (
+// Step 3
+function Step3({
+  childInfo,
+  setChildInfo,
+  onNext,
+  onPrev,
+}: {
+  childInfo: ChildInfo;
+  setChildInfo: (v: ChildInfo) => void;
+  onNext: () => void;
+  onPrev: () => void;
+}) {
+  return (
     <div className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <h1 className="text-xl font-bold text-[#1A0533] mb-0.5">
         Tell us about your child
       </h1>
-      <p className="text-[12px] text-gray-400 mb-2 ">
+      <p className="text-[12px] text-gray-400 mb-2">
         This helps us create a personalized spelling journey.
       </p>
 
@@ -243,6 +281,7 @@ export default function OnboardingPage() {
           <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
             Grade Level
           </label>
+          {/* FIX: bg color is now applied conditionally, not on the base class */}
           <div className="grid grid-cols-4 gap-1.5">
             {["Pre-K", "Kinder", "1st", "2nd", "3rd", "4th", "5th", "6th"].map(
               (level) => (
@@ -251,10 +290,10 @@ export default function OnboardingPage() {
                   onClick={() =>
                     setChildInfo({ ...childInfo, gradeLevel: level })
                   }
-                  className={`py-1 text-[12px] bg-[#F8F7FF] font-bold rounded-lg border transition-all ${
+                  className={`py-1 text-[12px] font-bold rounded-lg border transition-all ${
                     childInfo.gradeLevel === level
-                      ? "bg-[#7C3AED] border-[#7C3AED] text-[#7C3AED] shadow-sm shadow-purple-100"
-                      : "border-gray-100 text-[#4B3A7A] hover:bg-gray-50 font-medium"
+                      ? "bg-[#7C3AED] border-[#7C3AED] text-white shadow-sm shadow-purple-100"
+                      : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
                   }`}
                 >
                   {level}
@@ -346,28 +385,39 @@ export default function OnboardingPage() {
 
       <div className="flex w-full gap-3 mt-auto">
         <button
-          onClick={prevStep}
+          onClick={onPrev}
           className="flex-1 h-9 bg-white border border-gray-200 text-[#1A0533] rounded-xl font-bold transition-all text-sm"
         >
           Back
         </button>
         <button
-          onClick={nextStep}
+          onClick={onNext}
           disabled={
             !childInfo.firstName ||
             !childInfo.age ||
             !childInfo.gradeLevel ||
             !childInfo.spellingLevel
           }
-          className="flex-[2] h-9 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
+          className="flex-2 h-9 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
         >
           Continue
         </button>
       </div>
     </div>
   );
+}
 
-  const Step4 = () => (
+// Step 4
+function Step4({
+  childInfo,
+  onNext,
+  onPrev,
+}: {
+  childInfo: ChildInfo;
+  onNext: () => void;
+  onPrev: () => void;
+}) {
+  return (
     <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="w-12 h-12 bg-[#FFFBEB] rounded-full flex items-center justify-center mb-4">
         <Sparkles className="w-6 h-6 text-[#F59E0B]" />
@@ -376,7 +426,7 @@ export default function OnboardingPage() {
         Your Personalized Plan
       </h1>
       <p className="text-[10px] text-gray-400 mb-6 px-4">
-        Based on what you told us, here's what we recommend for{" "}
+        Based on what you told us, here&apos;s what we recommend for{" "}
         {childInfo.firstName || "your child"}.
       </p>
 
@@ -399,7 +449,9 @@ export default function OnboardingPage() {
           {
             icon: Star,
             title: "Themed Word Lists",
-            desc: `Custom lists based on ${childInfo.firstName}'s interests: ${childInfo.interests.slice(0, 2).join(", ") || "Magic"}.`,
+            desc: `Custom lists based on ${childInfo.firstName}'s interests: ${
+              childInfo.interests.slice(0, 2).join(", ") || "Magic"
+            }.`,
             color: "bg-[#FFFBEB]",
             iconColor: "text-[#F59E0B]",
           },
@@ -434,34 +486,43 @@ export default function OnboardingPage() {
 
       <div className="flex w-full gap-3">
         <button
-          onClick={prevStep}
+          onClick={onPrev}
           className="flex-1 h-11 bg-white border border-gray-200 text-[#1A0533] rounded-xl font-bold transition-all text-sm"
         >
           Back
         </button>
         <button
-          onClick={nextStep}
-          className="flex-[2] h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
+          onClick={onNext}
+          className="flex-2 h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
         >
           Continue
         </button>
       </div>
     </div>
   );
+}
 
-  const Step5 = () => (
+// Step 5
+function Step5({
+  parentName,
+  childInfo,
+}: {
+  parentName: string;
+  childInfo: ChildInfo;
+}) {
+  return (
     <div className="flex flex-col px-8 items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="w-16 h-16 bg-[#F0FDF4] rounded-full flex items-center justify-center mb-6">
         <CheckCircle2 className="w-10 h-10 text-[#22C55E]" />
       </div>
       <h1 className="text-2xl font-bold text-[#1A0533] mb-1">
-        You're All Set, {parentName}!
+        You&apos;re All Set, {parentName}!
       </h1>
       <p className="text-[11px] text-gray-400 mb-8">
-        Your child's magical spelling journey begins now.
+        Your child&apos;s magical spelling journey begins now.
       </p>
 
-      <div className="w-full bg-white border border-[#F3F0FF] p-4 rounded-2xl text-left mb-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] ">
+      <div className="w-full bg-white border border-[#F3F0FF] p-4 rounded-2xl text-left mb-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 bg-[#7C3AED] rounded-3xl flex items-center justify-center text-white font-bold text-lg">
             {childInfo.firstName[0]?.toUpperCase() || "C"}
@@ -489,7 +550,7 @@ export default function OnboardingPage() {
 
       <div className="w-full text-left space-y-3 mb-6">
         <p className="text-[9px] font-bold text-gray-700 tracking-widest">
-          What Happens next :
+          What Happens next:
         </p>
         <div className="space-y-2">
           {[
@@ -515,25 +576,73 @@ export default function OnboardingPage() {
       </button>
     </div>
   );
+}
+
+// Main Page
+export default function OnboardingPage() {
+  const [step, setStep] = useState<OnboardingStep>(1);
+  const [parentName, setParentName] = useState("");
+  const [childCount, setChildCount] = useState(1);
+  const [childInfo, setChildInfo] = useState<ChildInfo>({
+    firstName: "",
+    age: "",
+    gradeLevel: "",
+    spellingLevel: "",
+    interests: [],
+  });
+
+  const nextStep = () =>
+    setStep((prev) => (prev < 5 ? ((prev + 1) as OnboardingStep) : prev));
+  const prevStep = () =>
+    setStep((prev) => (prev > 1 ? ((prev - 1) as OnboardingStep) : prev));
 
   return (
     <div className="w-full relative bg-white flex flex-col font-poppins overflow-hidden">
       <AuthLayout>
-        {/* Main Content */}
         <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6 z-10 min-h-0 overflow-hidden -mt-4">
-          <ProgressBar />
+          <ProgressBar step={step} />
 
-          <div className="w-full max-w-[480px] bg-white rounded-[12px] md:rounded-[12px] shadow-[0_20px_50px_rgba(124,58,237,0.06)] border border-[#F3F0FF] overflow-hidden flex flex-col">
+          <div className="w-full max-w-120 bg-white rounded-xl shadow-[0_20px_50px_rgba(124,58,237,0.06)] border border-[#F3F0FF] overflow-hidden flex flex-col">
             <div className="p-2 md:p-4 flex-1">
-              {step === 1 && <Step1 />}
-              {step === 2 && <Step2 />}
-              {step === 3 && <Step3 />}
-              {step === 4 && <Step4 />}
-              {step === 5 && <Step5 />}
+              {step === 1 && (
+                <Step1
+                  parentName={parentName}
+                  setParentName={setParentName}
+                  onNext={nextStep}
+                />
+              )}
+              {step === 2 && (
+                <Step2
+                  parentName={parentName}
+                  childCount={childCount}
+                  setChildCount={setChildCount}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+              {step === 3 && (
+                <Step3
+                  childInfo={childInfo}
+                  setChildInfo={setChildInfo}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+              {step === 4 && (
+                <Step4
+                  childInfo={childInfo}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+              {step === 5 && (
+                <Step5 parentName={parentName} childInfo={childInfo} />
+              )}
             </div>
           </div>
         </main>
       </AuthLayout>
+
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
