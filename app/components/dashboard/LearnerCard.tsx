@@ -25,7 +25,10 @@ export default function LearnerCard({
     <div className="bg-white p-6 rounded-3xl border border-dashboard-border shadow-sm hover:shadow-lg transition-all duration-300 group">
       <div className="flex items-start justify-between mb-6">
         <div className="flex gap-4">
-          <div className={`w-14 h-14 rounded-full ${avatarColor} flex items-center justify-center text-white border-4 border-white shadow-md relative group-hover:scale-110 transition-transform duration-300`}>
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center text-white border-4 border-white shadow-md relative group-hover:scale-110 transition-transform duration-300"
+            style={{ backgroundColor: avatarColor || "#8B5CF6" }}
+          >
             <span className="text-xl font-bold">{name.charAt(0)}</span>
             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
               <Star size={10} className="text-white fill-white" />

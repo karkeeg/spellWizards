@@ -67,3 +67,39 @@ export const getChildById = async (
   );
   return response.data;
 };
+
+export interface CustomWordResponse {
+  id: string;
+  child_id: string;
+  word: string;
+  grade_band?: string;
+  status: string; // 'active' | 'mastered' | 'inactive'
+  created_at: string;
+  questions?: object[];
+}
+
+export const getCustomWords = async (
+  childId: string,
+): Promise<CustomWordResponse[]> => {
+  const response = await axiosInstance.get(
+    `/parent/me/children/${childId}/custom-words`,
+  );
+  const data = response.data;
+  // Normalize: API may return array directly, or { words: [...] }, or { data: [...] }
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.words)) return data.words;
+  if (data && Array.isArray(data.data)) return data.data;
+  console.warn("Unexpected custom words response shape:", data);
+  return [];
+};
+
+export const addCustomWord = async (
+  childId: string,
+  word: string,
+): Promise<CustomWordResponse> => {
+  const response = await axiosInstance.post<CustomWordResponse>(
+    `/parent/me/children/${childId}/custom-words`,
+    { word },
+  );
+  return response.data;
+};

@@ -110,7 +110,7 @@ export default function DashboardPage() {
               <div key={i} className="h-48 bg-gray-100 rounded-3xl animate-pulse" />
             ))
           ) : children && children.length > 0 ? (
-            children.map((child, i) => (
+            children.map((child) => (
               <LearnerCard
                 key={child.child_id}
                 name={child.name}
@@ -119,9 +119,9 @@ export default function DashboardPage() {
                 level={child.current_level}
                 streak={child.streak_days}
                 xp={child.xp}
-                overallXp={(child.current_level || 1) * 10000} // Mock overall XP
+                overallXp={(child.current_level || 1) * 10000}
                 lastActive={child.created_at ? new Date(child.created_at).toLocaleDateString() : "Recently"}
-                avatarColor={i % 2 === 0 ? "bg-blue-400" : "bg-purple-400"}
+                avatarColor={child.avatar_url?.startsWith("#") ? child.avatar_url : "#8B5CF6"}
               />
             ))
           ) : (

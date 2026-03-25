@@ -33,7 +33,10 @@ export default function MyChildrenPage() {
             <div key={child.child_id} className="bg-white rounded-[2rem] border border-dashboard-border p-6 shadow-sm hover:shadow-lg transition-all duration-300 group relative">
               <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
                 <div className="flex items-start gap-5">
-                  <div className={`w-14 h-14 rounded-full ${i % 2 === 0 ? "bg-blue-400" : "bg-purple-400"} flex items-center justify-center text-white border-4 border-white shadow-lg group-hover:scale-110 transition-transform flex-shrink-0`}>
+                  <div
+                    className="w-14 h-14 rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg group-hover:scale-110 transition-transform flex-shrink-0"
+                    style={{ backgroundColor: child.avatar_url?.startsWith("#") ? child.avatar_url : "#8B5CF6" }}
+                  >
                     <span className="text-xl font-bold">{child.name.charAt(0)}</span>
                   </div>
                   <div className="space-y-1.5">

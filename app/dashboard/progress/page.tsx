@@ -42,10 +42,10 @@ export default function ProgressPage() {
     <div className="space-y-6 pb-8 animate-fade-in">
       {/* Child Selector */}
       <ChildSelector 
-        children_list={children.map((c, i) => ({ 
+        children_list={children.map((c) => ({ 
           id: c.child_id, 
           name: c.name, 
-          color: i % 2 === 0 ? "#7C3AED" : "#F97316" 
+          color: c.avatar_url?.startsWith("#") ? c.avatar_url : "#8B5CF6"
         }))} 
         selectedId={selectedChildId || ""} 
         onSelect={setSelectedChildId} 
@@ -55,7 +55,10 @@ export default function ProgressPage() {
       <div className="bg-white rounded-[2rem] border border-dashboard-border p-6 md:p-8 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-5">
-            <div className={`w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-[#14062B] border-4 border-white shadow-lg relative`}>
+            <div 
+              className={`w-16 h-16 rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg relative`}
+              style={{ backgroundColor: selectedChild?.avatar_url?.startsWith("#") ? selectedChild.avatar_url : "#8B5CF6" }}
+            >
               <span className="text-2xl font-bold">{selectedChild?.name.charAt(0)}</span>
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full border-2 border-white flex items-center justify-center shadow-md">
                 <Star size={12} className="text-white fill-white" />
