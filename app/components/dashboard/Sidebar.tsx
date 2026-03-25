@@ -11,8 +11,12 @@ import {
   FileText, 
   UserPlus, 
   Settings,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from "lucide-react";
+
+import { useParentProfile } from "@/hooks/use-parent-profile";
+import { useAuth } from "@/contexts/auth-context";
 
 const navItems = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -25,6 +29,18 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: profile, isLoading } = useParentProfile();
+  const { logout } = useAuth();
+
+  const getInitials = (name?: string) => {
+    if (!name) return "P";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <aside className="w-64 h-screen bg-white border-r border-dashboard-border flex flex-col fixed left-0 top-0 z-30">
@@ -71,16 +87,33 @@ export default function Sidebar() {
       </nav>
 
       {/* User Profile Section */}
-      <div className="p-4 border-t border-dashboard-border bg-gray-50/50">
-        <div className="flex items-center gap-3 p-2 rounded-xl">
-          <div className="w-10 h-10 rounded-full bg-[#D8B4FE] flex items-center justify-center text-white font-bold">
-            MK
+      <div className="p-4 border-t border-dashboard-border bg-gray-50/50 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-3 p-2 rounded-xl flex-1 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-[#D8B4FE] flex items-center justify-center text-white font-bold shrink-0">
+            {isLoading ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              getInitials(profile?.parent_name)
+            )}
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="text-sm font-bold text-[#14062B] truncate">Meena Kumar</span>
-            <span className="text-[10px] text-dashboard-text-muted truncate">Parent Account • Pro</span>
+            <span className="text-sm font-bold text-[#14062B] truncate">
+              {isLoading ? "Loading..." : profile?.parent_name || "Guest Parent"}
+            </span>
+            <span className="text-[10px] text-dashboard-text-muted truncate">
+              Parent Account • {profile?.onboarding_status === "completed" ? "Pro" : "Basic"}
+            </span>
           </div>
         </div>
+        
+        {/* Logout Button */}
+        <button 
+          onClick={logout}
+          className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300 group shrink-0"
+          title="Logout"
+        >
+          <LogOut size={20} className="group-hover:scale-110 transition-transform" />
+        </button>
       </div>
     </aside>
   );

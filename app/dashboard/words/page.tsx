@@ -3,11 +3,9 @@
 import React, { useState } from "react";
 import ChildSelector from "../../components/dashboard/ChildSelector";
 import { Plus, X, Check, BookOpen, Users } from "lucide-react";
+import Link from "next/link";
 
-const children_list = [
-  { id: "1", name: "Rahul Kumar", color: "#F97316" },
-  { id: "2", name: "Priya Sharma", color: "#EAB308" },
-];
+import { useChildren } from "@/hooks/use-child";
 
 const initialWords = [
   { id: "1", word: "Kaleidoscope", date: "Jan 20", status: "Mastered" },
@@ -17,9 +15,17 @@ const initialWords = [
 ];
 
 export default function CustomWordsPage() {
-  const [selectedChildId, setSelectedChildId] = useState("1");
-  const [words, setWords] = useState(initialWords);
   const [newWord, setNewWord] = useState("");
+  const { data: children, isLoading } = useChildren();
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
+  const [words, setWords] = useState(initialWords);
+
+  // Set default selection
+  React.useEffect(() => {
+    if (children && children.length > 0 && !selectedChildId) {
+      setSelectedChildId(children[0].child_id);
+    }
+  }, [children, selectedChildId]);
 
   const handleAddWord = () => {
     if (!newWord.trim()) return;
@@ -37,14 +43,45 @@ export default function CustomWordsPage() {
     setWords(words.filter(w => w.id !== id));
   };
 
-  const selectedChild = children_list.find(c => c.id === selectedChildId);
+  const selectedChild = children?.find(c => c.child_id === selectedChildId);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 pb-8 animate-pulse p-4">
+        <div className="h-10 w-64 bg-gray-100 rounded-xl mb-8" />
+        <div className="h-48 bg-gray-100 rounded-[2rem]" />
+      </div>
+    );
+  }
+
+  if (!children || children.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-[2rem] border-2 border-dashed border-gray-100 min-h-[400px]">
+        <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
+          <BookOpen className="text-dashboard-purple" size={32} />
+        </div>
+        <h3 className="text-xl font-bold text-[#14062B] mb-2 font-syne">No children found</h3>
+        <p className="text-dashboard-text-muted mb-6">Add a child to start managing their custom word lists!</p>
+        <Link 
+          href="/dashboard/add-child"
+          className="bg-dashboard-purple text-white px-6 py-3 rounded-xl font-bold hover:bg-[#6D28D9] transition-all"
+        >
+          Add Child
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-8 animate-fade-in">
       {/* Child Selector */}
       <ChildSelector 
-        children_list={children_list} 
-        selectedId={selectedChildId} 
+        children_list={children.map((c, i) => ({ 
+          id: c.child_id, 
+          name: c.name, 
+          color: i % 2 === 0 ? "#7C3AED" : "#F97316" 
+        }))} 
+        selectedId={selectedChildId || ""} 
         onSelect={setSelectedChildId} 
       />
 

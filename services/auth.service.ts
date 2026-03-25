@@ -14,7 +14,6 @@ export interface AuthResponse {
   onboarding_status: "completed" | "pending";
 }
 
-//  API Call 
 export const authenticateParent = async (
   data: AuthRequest,
 ): Promise<AuthResponse> => {
@@ -23,4 +22,8 @@ export const authenticateParent = async (
     data,
   );
   return response.data;
+};
+
+export const completeOnboarding = async (): Promise<void> => {
+  await axiosInstance.post("/auth/parent/onboarding/complete");
 };

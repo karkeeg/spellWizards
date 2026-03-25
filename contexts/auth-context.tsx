@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import { AuthResponse } from "@/services/auth.service";
+import { toast } from "react-hot-toast";
 
 // Types
 interface AuthState {
@@ -67,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    toast.success("Logged out successfully");
     localStorage.removeItem("access_token");
     localStorage.removeItem("parent_id");
     localStorage.removeItem("onboarding_status");

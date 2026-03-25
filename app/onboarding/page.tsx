@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useUpdateParent } from "@/hooks/use-parent";
+import { useState, useEffect } from "react";
 import {
   Plus,
   Minus,
@@ -11,15 +10,28 @@ import {
   Layout,
   Star,
   CheckCircle2,
+  ChevronRight,
+  LogOut,
 } from "lucide-react";
+import { useUpdateParent } from "@/hooks/use-parent";
+import { useCreateChildren } from "@/hooks/use-child";
+import { 
+  BatchCreateChildrenRequest, 
+  ChildProfileItem 
+} from "@/services/child.service";
+import { completeOnboarding } from "@/services/auth.service";
 import { WandIcon } from "../components/WandIcon";
 import AuthLayout from "../components/AuthLayout";
+import { AuthGuard } from "../components/AuthGuard";
+import { toast } from "react-hot-toast";
 
 type OnboardingStep = 1 | 2 | 3 | 4 | 5;
 
 interface ChildInfo {
   firstName: string;
   age: string;
+  email: string;
+  password: string;
   gradeLevel: string;
   spellingLevel: string;
   interests: string[];
@@ -28,6 +40,8 @@ interface ChildInfo {
 const emptyChild = (): ChildInfo => ({
   firstName: "",
   age: "",
+  email: "",
+  password: "",
   gradeLevel: "",
   spellingLevel: "",
   interests: [],
@@ -75,7 +89,15 @@ function Step1({
 
   const handleContinue = () => {
     if (!parentName.trim()) return;
-    updateParent({ parent_name: parentName }, { onSuccess: () => onNext() });
+    updateParent(
+      { parent_name: parentName },
+      {
+        onSuccess: () => {
+          toast.success(`Awesome! Nice to meet you, ${parentName} ✨`);
+          onNext();
+        },
+      },
+    );
   };
 
   return (
@@ -236,11 +258,11 @@ function ChildForm({
   onChange: (v: ChildInfo) => void;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {/* Name + Age */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-1 opacity-60">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#1A0533]">
             First Name
           </label>
           <input
@@ -248,121 +270,166 @@ function ChildForm({
             placeholder="e.g. Emma"
             value={info.firstName}
             onChange={(e) => onChange({ ...info, firstName: e.target.value })}
-            className="w-full h-8 px-3 bg-[#F8F7FF] border border-[#E5E0FF] rounded-md focus:border-[#7C3AED] outline-none text-xs"
+            className="w-full h-10 px-4 bg-[#F8F7FF] border border-[#E5E0FF] rounded-xl focus:border-[#7C3AED] outline-none text-sm transition-all"
           />
         </div>
-        <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-1 opacity-60">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#1A0533]">
             Age
           </label>
-          <select
-            value={info.age}
-            onChange={(e) => onChange({ ...info, age: e.target.value })}
-            className="w-full h-8 px-3 bg-[#F8F7FF] border border-[#E5E0FF] rounded-md focus:border-[#7C3AED] outline-none appearance-none text-xs"
-          >
-            <option value="">Select age</option>
-            {[4, 5, 6, 7, 8, 9, 10, 11, 12].map((age) => (
-              <option key={age} value={age}>
-                {age}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={info.age}
+              onChange={(e) => onChange({ ...info, age: e.target.value })}
+              className="w-full h-10 px-4 bg-[#F8F7FF] border border-[#E5E0FF] rounded-xl focus:border-[#7C3AED] outline-none appearance-none text-sm transition-all"
+            >
+              <option value="">Select age</option>
+              {[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((age) => (
+                <option key={age} value={age}>
+                  {age}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+              <ChevronRight className="w-4 h-4 rotate-90" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Email + Password */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#1A0533]">
+            Childs Email *
+          </label>
+          <input
+            type="email"
+            placeholder="e.g. emma@gmail.com"
+            value={info.email}
+            onChange={(e) => onChange({ ...info, email: e.target.value })}
+            className="w-full h-10 px-4 bg-[#F8F7FF] border border-[#E5E0FF] rounded-xl focus:border-[#7C3AED] outline-none text-sm transition-all"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#1A0533]">
+            Childs Password *
+          </label>
+          <input
+            type="password"
+            placeholder="*******"
+            value={info.password}
+            onChange={(e) => onChange({ ...info, password: e.target.value })}
+            className="w-full h-10 px-4 bg-[#F8F7FF] border border-[#E5E0FF] rounded-xl focus:border-[#7C3AED] outline-none text-sm transition-all"
+          />
         </div>
       </div>
 
       {/* Grade Level */}
-      <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
+      <div className="space-y-2.5">
+        <label className="block text-xs font-bold text-[#1A0533]">
           Grade Level
         </label>
-        <div className="grid grid-cols-4 gap-1.5">
-          {["Pre-K", "Kinder", "1st", "2nd", "3rd", "4th", "5th", "6th"].map(
-            (level) => (
-              <button
-                key={level}
-                onClick={() => onChange({ ...info, gradeLevel: level })}
-                className={`py-1 text-[12px] font-bold rounded-lg border transition-all ${
-                  info.gradeLevel === level
-                    ? "bg-[#7C3AED] border-[#7C3AED] text-white shadow-sm shadow-purple-100"
-                    : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
-                }`}
-              >
-                {level}
-              </button>
-            ),
-          )}
+        <div className="flex flex-wrap gap-2">
+          {[
+            "Pre-K",
+            "Kindergarten",
+            "1st Grade",
+            "2nd Grade",
+            "3rd Grade",
+            "4th Grade",
+            "5th Grade",
+            "6th Grade",
+            "7th Grade",
+            "8th Grade",
+          ].map((level) => (
+            <button
+              key={level}
+              onClick={() => onChange({ ...info, gradeLevel: level })}
+              className={`px-4 py-2 text-[11px] font-bold rounded-xl border transition-all ${
+                info.gradeLevel === level
+                  ? "bg-[#7C3AED] border-[#7C3AED] text-white shadow-md shadow-purple-100"
+                  : "bg-[#F8F7FF] border-[#E5E0FF] text-[#4B3A7A] hover:bg-white hover:border-[#7C3AED]/30"
+              }`}
+            >
+              {level}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Spelling Level */}
-      <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
-          Spelling Level
+      <div className="space-y-2.5">
+        <label className="block text-xs font-bold text-[#1A0533]">
+          Current Spelling Level
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {[
-            { id: "Beginner", icon: "🌱", desc: "Just starting" },
-            { id: "Elementary", icon: "🥪", desc: "Basic 3-4 letters" },
-            { id: "Intermediate", icon: "📖", desc: "Common words" },
-            { id: "Advanced", icon: "🏆", desc: "Strong speller" },
+            { id: "Beginner", icon: "🌱", desc: "Just starting to learn letters and simple words" },
+            { id: "Elementary", icon: "🥪", desc: "Can spell basic 3-4 letter words" },
+            { id: "Intermediate", icon: "📖", desc: "Comfortable with common words, learning patterns" },
+            { id: "Advanced", icon: "🏆", desc: "Strong speller, ready for challenging words" },
           ].map((lvl) => (
             <button
               key={lvl.id}
               onClick={() => onChange({ ...info, spellingLevel: lvl.id })}
-              className={`p-2 text-left rounded-xl border-2 transition-all ${
+              className={`p-4 text-left rounded-2xl border-2 transition-all h-full ${
                 info.spellingLevel === lvl.id
-                  ? "border-[#7C3AED] bg-[#FDFDFF] ring-2 ring-[#7C3AED]/5"
+                  ? "border-[#7C3AED] bg-white ring-4 ring-[#7C3AED]/5"
                   : "border-gray-100 bg-white hover:border-[#DDD6FE]"
               }`}
             >
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-xs">{lvl.icon}</span>
-                <span className="font-bold text-[12px] text-[#1A0533]">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-xl">{lvl.icon}</span>
+                <span className="font-bold text-sm text-[#1A0533]">
                   {lvl.id}
                 </span>
               </div>
-              <p className="text-[8px] text-gray-400 font-medium">{lvl.desc}</p>
+              <p className="text-[10px] text-gray-500 leading-normal">{lvl.desc}</p>
             </button>
           ))}
         </div>
       </div>
 
       {/* Interests */}
-      <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
-          Interests <span className="font-normal">(up to 4)</span>
+      <div className="space-y-2.5">
+        <label className="block text-xs font-bold text-[#1A0533]">
+          Interests <span className="font-normal text-gray-400">(pick up to 4)</span>
         </label>
-        <div className="flex flex-wrap gap-1.5 justify-center">
+        <div className="flex flex-wrap gap-2">
           {[
-            "Animals",
-            "Space",
-            "Sports",
-            "Music",
-            "Art",
-            "Science",
-            "Nature",
-            "Games",
-          ].map((interest) => (
+            { id: "Animals", icon: "🐾" },
+            { id: "Space", icon: "🚀" },
+            { id: "Sports", icon: "⚽" },
+            { id: "Music", icon: "🎵" },
+            { id: "Art", icon: "🎨" },
+            { id: "Science", icon: "🔬" },
+            { id: "Nature", icon: "🌿" },
+            { id: "Food", icon: "🍕" },
+            { id: "Games", icon: "🎮" },
+            { id: "Stories", icon: "📚" },
+          ].map((item) => (
             <button
-              key={interest}
+              key={item.id}
               onClick={() => {
                 const current = info.interests;
-                if (current.includes(interest)) {
+                if (current.includes(item.id)) {
                   onChange({
                     ...info,
-                    interests: current.filter((i) => i !== interest),
+                    interests: current.filter((i) => i !== item.id),
                   });
                 } else if (current.length < 4) {
-                  onChange({ ...info, interests: [...current, interest] });
+                  onChange({ ...info, interests: [...current, item.id] });
                 }
               }}
-              className={`px-3 py-1.5 text-[9px] font-bold rounded-full border transition-all ${
-                info.interests.includes(interest)
-                  ? "bg-[#7C3AED] text-white shadow-sm shadow-purple-100"
-                  : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
+              className={`flex items-center gap-2 px-4 py-2 text-[11px] font-bold rounded-full border transition-all ${
+                info.interests.includes(item.id)
+                  ? "bg-[#7C3AED] border-[#7C3AED] text-white shadow-md shadow-purple-100"
+                  : "bg-white border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
               }`}
             >
-              {interest}
+              <span>{item.icon}</span>
+              {item.id}
             </button>
           ))}
         </div>
@@ -386,6 +453,7 @@ function Step3({
   onPrev: () => void;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showChildSelector, setShowChildSelector] = useState(false);
 
   const current = kids[currentIndex];
 
@@ -395,9 +463,20 @@ function Step3({
     setKids(copy);
   };
 
+  const getOrdinalSuffix = (i: number) => {
+    const j = i % 10,
+      k = i % 100;
+    if (j === 1 && k !== 11) return "st";
+    if (j === 2 && k !== 12) return "nd";
+    if (j === 3 && k !== 13) return "rd";
+    return "th";
+  };
+
   const isCurrentValid =
     !!current.firstName &&
     !!current.age &&
+    !!current.email &&
+    !!current.password &&
     !!current.gradeLevel &&
     !!current.spellingLevel;
 
@@ -414,7 +493,7 @@ function Step3({
 
   const handleBack = () => {
     if (currentIndex === 0) {
-      onPrev(); // go back to Step 2
+      onPrev();
     } else {
       setCurrentIndex((i) => i - 1);
     }
@@ -423,69 +502,77 @@ function Step3({
   return (
     <div className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-xl font-bold text-[#1A0533]">
-            Tell us about your child
+          <h1 className="text-2xl font-bold text-[#1A0533] mb-1">
+            Tell us about your {currentIndex + 1}
+            {getOrdinalSuffix(currentIndex + 1)} child
           </h1>
-          <p className="text-[12px] text-gray-400">
+          <p className="text-sm text-gray-400">
             This helps us create a personalized spelling journey.
           </p>
         </div>
-        {/* Child index indicator — only show if more than 1 child */}
-        {childCount > 1 && (
-          <div className="shrink-0 ml-2 px-2.5 py-1 bg-[#F3F0FF] rounded-lg text-center">
-            <p className="text-[10px] font-bold text-[#7C3AED]">
-              Child {currentIndex + 1}/{childCount}
-            </p>
-          </div>
-        )}
+
+        {/* Child Selector Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setShowChildSelector(!showChildSelector)}
+            className="flex items-center gap-2 px-4 py-2 bg-[#7C3AED] text-white rounded-xl font-bold text-sm shadow-lg shadow-purple-100 transition-all hover:bg-[#6D28D9]"
+          >
+            Child {currentIndex + 1}
+            <ChevronRight className={`w-4 h-4 transition-transform ${showChildSelector ? "-rotate-90" : "rotate-90"}`} />
+          </button>
+
+          {showChildSelector && childCount > 1 && (
+            <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-xl shadow-xl z-20 py-1 overflow-hidden">
+              {kids.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setCurrentIndex(i);
+                    setShowChildSelector(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm font-bold transition-colors ${
+                    i === currentIndex
+                      ? "bg-[#F3F0FF] text-[#7C3AED]"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  Child {i + 1}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Child tabs — clickable dots if multiple children */}
-      {childCount > 1 && (
-        <div className="flex gap-1.5 mb-3">
-          {Array.from({ length: childCount }).map((_, i) => {
-            const filled =
-              !!kids[i].firstName &&
-              !!kids[i].age &&
-              !!kids[i].gradeLevel &&
-              !!kids[i].spellingLevel;
-            return (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === currentIndex
-                    ? "bg-[#7C3AED] w-6"
-                    : filled
-                      ? "bg-[#A78BFA] w-3"
-                      : "bg-[#E5E0FF] w-3"
-                }`}
-              />
-            );
-          })}
-        </div>
-      )}
-
       {/* Form for current child */}
-      <ChildForm info={current} onChange={updateCurrent} />
+      <div className="flex-1 overflow-y-auto max-h-[50vh] pr-2 custom-scrollbar mb-8">
+        <ChildForm info={current} onChange={updateCurrent} />
+      </div>
 
       {/* Navigation */}
-      <div className="flex w-full gap-3 mt-3">
+      <div className="flex items-center justify-between pt-4 border-t border-gray-50">
         <button
           onClick={handleBack}
-          className="flex-1 h-9 bg-white border border-gray-200 text-[#1A0533] rounded-xl font-bold transition-all text-sm"
+          className="text-sm font-bold text-[#1A0533] hover:opacity-70 transition-opacity"
         >
           Back
         </button>
         <button
           onClick={handleNext}
           disabled={!isCurrentValid}
-          className="flex-2 h-9 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
+          className="px-10 py-3 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-100 text-sm"
         >
           {isLastChild ? "Continue" : `Next Child →`}
         </button>
+      </div>
+
+      {/* Footer Links (simplified, usually these are in the layout but matching design) */}
+      <div className="flex items-center justify-center gap-6 mt-8">
+        <a href="#" className="text-xs text-gray-400 font-medium hover:text-[#7C3AED] transition-colors underline underline-offset-4">Terms of service</a>
+        <a href="#" className="text-xs text-gray-400 font-medium hover:text-[#7C3AED] transition-colors underline underline-offset-4">Privacy policy</a>
+        <span className="text-xs text-gray-400 font-medium">@2026 Spellwizards</span>
       </div>
     </div>
   );
@@ -595,13 +682,17 @@ function Step4({
 function Step5({
   parentName,
   kids,
+  onComplete,
+  isSaving,
 }: {
   parentName: string;
   kids: ChildInfo[];
+  onComplete: () => void;
+  isSaving: boolean;
 }) {
   return (
-    <div className="flex flex-col px-8 items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="w-16 h-16 bg-[#F0FDF4] rounded-full flex items-center justify-center mb-6">
+    <div className="flex flex-col px-4 items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500 max-h-[75vh] overflow-y-auto custom-scrollbar">
+      <div className="w-16 h-16 bg-[#F0FDF4] rounded-full flex items-center justify-center mb-6 shrink-0">
         <CheckCircle2 className="w-10 h-10 text-[#22C55E]" />
       </div>
       <h1 className="text-2xl font-bold text-[#1A0533] mb-1">
@@ -645,31 +736,41 @@ function Step5({
         ))}
       </div>
 
-      <div className="w-full text-left space-y-3 mb-6">
-        <p className="text-[9px] font-bold text-gray-700 tracking-widest">
-          What Happens next:
+      <div className="w-full text-left space-y-3 mb-10 bg-[#F8F7FF] p-6 rounded-3xl border border-[#F3F0FF]">
+        <p className="text-[10px] font-bold text-[#7C3AED] tracking-widest uppercase text-center mb-2">
+          What Happens next
         </p>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {[
-            "Personalized word lists generated",
-            "Learning schedule set",
-            "First lesson ready",
+            "Personalized word lists generated for each child",
+            "Learning schedules set based on levels",
+            "Unique invite codes ready in your dashboard",
           ].map((text, idx) => (
-            <div key={idx} className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-[#F0FDF4] rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-2.5 h-2.5 text-[#22C55E]" />
+            <div key={idx} className="flex items-start gap-3">
+              <div className="w-5 h-5 bg-[#F0FDF4] rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                <CheckCircle2 className="w-3 h-3 text-[#22C55E]" />
               </div>
-              <p className="text-[11px] text-[#4B3A7A] font-medium">{text}</p>
+              <p className="text-[12px] text-[#4B3A7A] font-medium leading-tight">
+                {text}
+              </p>
             </div>
           ))}
         </div>
       </div>
 
       <button
-        onClick={() => (window.location.href = "/")}
-        className="w-[60%] h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg transition-all shadow-lg shadow-purple-200 text-sm"
+        onClick={onComplete}
+        disabled={isSaving}
+        className="w-full h-12 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-2xl transition-all shadow-lg shadow-purple-200 font-bold text-sm mb-4 flex items-center justify-center gap-2"
       >
-        Continue to Dashboard
+        {isSaving ? (
+          <>
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            Creating Profiles...
+          </>
+        ) : (
+          "Go to Dashboard"
+        )}
       </button>
     </div>
   );
@@ -683,6 +784,46 @@ export default function OnboardingPage() {
 
   // Array of child info, resized whenever childCount changes
   const [kids, setKids] = useState<ChildInfo[]>([emptyChild()]);
+
+  const { mutate: createChildren, isPending: isSavingChildren } = useCreateChildren();
+
+  const handleComplete = async () => {
+    const children: ChildProfileItem[] = kids.map((k) => ({
+      name: k.firstName,
+      email: k.email,
+      age: parseInt(k.age) || 0,
+      class_name: k.gradeLevel,
+      current_spelling_level: k.spellingLevel,
+      interests: k.interests,
+      password: k.password,
+      avatar_url: "/avatars/default.png", // Default avatar
+    }));
+
+    const payload: BatchCreateChildrenRequest = { children };
+
+    createChildren(payload, {
+      onSuccess: async () => {
+        try {
+          // Step 2: Finalize onboarding status
+          await completeOnboarding();
+          
+          // Update local status so AuthGuard/Sidebar reflects it
+          localStorage.setItem("onboarding_status", "completed");
+          
+          toast.success("All profiles created! Welcome to the family! 🧙‍♂️");
+          window.location.href = "/dashboard";
+        } catch (err) {
+          console.error("Failed to finalize onboarding:", err);
+          toast.error("Children created, but failed to finalize onboarding status.");
+          // Still redirect as the core data is saved
+          window.location.href = "/dashboard";
+        }
+      },
+      onError: (err) => {
+        toast.error(err.message || "Failed to create child profiles. Please try again.");
+      },
+    });
+  };
 
   const handleSetChildCount = (count: number) => {
     setChildCount(count);
@@ -698,68 +839,84 @@ export default function OnboardingPage() {
     });
   };
 
-  const nextStep = () =>
+  const nextStep = () => {
     setStep((prev) => (prev < 5 ? ((prev + 1) as OnboardingStep) : prev));
-  const prevStep = () =>
+  };
+
+  const prevStep = () => {
     setStep((prev) => (prev > 1 ? ((prev - 1) as OnboardingStep) : prev));
+  };
 
   return (
-    <div className="w-full relative bg-white flex flex-col font-poppins overflow-hidden">
-      <AuthLayout>
-        <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6 z-10 min-h-0 overflow-hidden -mt-4">
-          <ProgressBar step={step} />
+    <AuthGuard>
+      <div className="w-full relative bg-white flex flex-col font-poppins overflow-hidden">
+        <AuthLayout>
+          <main className="flex-1 flex flex-col items-center justify-center px-4 md:px-6 z-10 min-h-0 -mt-4">
+            <ProgressBar step={step} />
 
-          <div className="w-full max-w-120 bg-white rounded-xl shadow-[0_20px_50px_rgba(124,58,237,0.06)] border border-[#F3F0FF] overflow-hidden flex flex-col">
-            <div className="p-2 md:p-4 flex-1">
-              {step === 1 && (
-                <Step1
-                  parentName={parentName}
-                  setParentName={setParentName}
-                  onNext={nextStep}
-                />
-              )}
-              {step === 2 && (
-                <Step2
-                  parentName={parentName}
-                  childCount={childCount}
-                  setChildCount={handleSetChildCount}
-                  onNext={nextStep}
-                  onPrev={prevStep}
-                />
-              )}
-              {step === 3 && (
-                <Step3
-                  childCount={childCount}
-                  kids={kids}
-                  setKids={setKids}
-                  onNext={nextStep}
-                  onPrev={prevStep}
-                />
-              )}
-              {step === 4 && (
-                <Step4 kids={kids} onNext={nextStep} onPrev={prevStep} />
-              )}
-              {step === 5 && <Step5 parentName={parentName} kids={kids} />}
+            <div className="w-full max-w-3xl bg-white rounded-3xl shadow-[0_24px_48px_rgba(124,58,237,0.08)] border border-[#F3F0FF] flex flex-col relative">
+              <div className="p-6 md:p-10 flex-1">
+                {step === 1 && (
+                  <Step1
+                    parentName={parentName}
+                    setParentName={setParentName}
+                    onNext={nextStep}
+                  />
+                )}
+                {step === 2 && (
+                  <Step2
+                    parentName={parentName}
+                    childCount={childCount}
+                    setChildCount={handleSetChildCount}
+                    onNext={nextStep}
+                    onPrev={prevStep}
+                  />
+                )}
+                {step === 3 && (
+                  <Step3
+                    childCount={childCount}
+                    kids={kids}
+                    setKids={setKids}
+                    onNext={nextStep}
+                    onPrev={prevStep}
+                  />
+                )}
+                {step === 4 && (
+                  <Step4
+                    kids={kids}
+                    onNext={nextStep}
+                    onPrev={prevStep}
+                  />
+                )}
+                {step === 5 && (
+                  <Step5 
+                    parentName={parentName} 
+                    kids={kids} 
+                    onComplete={handleComplete}
+                    isSaving={isSavingChildren}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        </main>
-      </AuthLayout>
+          </main>
+        </AuthLayout>
 
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e5e7eb;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #d1d5db;
-        }
-      `}</style>
-    </div>
+        <style jsx global>{`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+          }
+        `}</style>
+      </div>
+    </AuthGuard>
   );
 }

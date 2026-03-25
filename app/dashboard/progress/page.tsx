@@ -5,21 +5,49 @@ import ChildSelector from "../../components/dashboard/ChildSelector";
 import MetricCard from "../../components/dashboard/MetricCard";
 import { Flame, Star, Target, Zap, Clock, BookOpen, MousePointer2, Lightbulb, Gamepad2 } from "lucide-react";
 
-const children_list = [
-  { id: "1", name: "Rahul Kumar", color: "#F97316" },
-  { id: "2", name: "Priya Sharma", color: "#EAB308" },
-];
+import { useChildren } from "@/hooks/use-child";
 
 export default function ProgressPage() {
-  const [selectedChildId, setSelectedChildId] = useState("1");
-  const selectedChild = children_list.find((c) => c.id === selectedChildId);
+  const { data: children, isLoading } = useChildren();
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
+
+  // Set default selection once children are loaded
+  React.useEffect(() => {
+    if (children && children.length > 0 && !selectedChildId) {
+      setSelectedChildId(children[0].child_id);
+    }
+  }, [children, selectedChildId]);
+
+  const selectedChild = children?.find((c) => c.child_id === selectedChildId);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 pb-8 animate-pulse p-4">
+        <div className="h-10 w-64 bg-gray-100 rounded-xl mb-8" />
+        <div className="h-48 bg-gray-100 rounded-[2rem]" />
+      </div>
+    );
+  }
+
+  if (!children || children.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-[2rem] border-2 border-dashed border-gray-100 min-h-[400px]">
+        <h3 className="text-xl font-bold text-[#14062B] mb-2 font-syne">No learners yet</h3>
+        <p className="text-dashboard-text-muted mb-6">Add your first child to see their magical progress!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-8 animate-fade-in">
       {/* Child Selector */}
       <ChildSelector 
-        children_list={children_list} 
-        selectedId={selectedChildId} 
+        children_list={children.map((c, i) => ({ 
+          id: c.child_id, 
+          name: c.name, 
+          color: i % 2 === 0 ? "#7C3AED" : "#F97316" 
+        }))} 
+        selectedId={selectedChildId || ""} 
         onSelect={setSelectedChildId} 
       />
 
@@ -36,27 +64,27 @@ export default function ProgressPage() {
             <div>
               <h2 className="text-xl font-bold text-[#14062B] font-syne">{selectedChild?.name}</h2>
               <p className="text-xs text-dashboard-text-muted mt-1 font-medium">
-                5th Grade • Last active Yesterday, 4:30 PM
+                {selectedChild?.class_name} Grade • Last active {selectedChild?.created_at ? new Date(selectedChild.created_at).toLocaleDateString() : "Recently"}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-8 md:gap-10 bg-gray-50/50 p-4 rounded-2xl border border-gray-100/50">
-            <MetricCard label="Day Streak" value="12" icon={Flame} color="text-orange-500" />
-            <MetricCard label="Level" value="Lv.2" icon={Star} color="text-blue-500" />
-            <MetricCard label="Accuracy" value="87%" icon={Target} color="text-green-500" />
+            <MetricCard label="Day Streak" value={selectedChild?.streak_days.toString() || "0"} icon={Flame} color="text-orange-500" />
+            <MetricCard label="Level" value={`Lv.${selectedChild?.current_level || 1}`} icon={Star} color="text-blue-500" />
+            <MetricCard label="Accuracy" value="--" icon={Target} color="text-green-500" />
           </div>
         </div>
 
         <div className="mt-10 space-y-3">
           <div className="flex items-center justify-between text-sm font-bold">
-            <span className="text-[#14062B]">XP Progress to Level 3</span>
-            <span className="text-dashboard-text-muted tabular-nums">21,363 / 30,000</span>
+            <span className="text-[#14062B]">XP Progress to Level {(selectedChild?.current_level || 1) + 1}</span>
+            <span className="text-dashboard-text-muted tabular-nums">{selectedChild?.xp.toLocaleString()} / {((selectedChild?.current_level || 1) + 1) * 10000}</span>
           </div>
           <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-50/50">
             <div 
               className="h-full bg-orange-500 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(249,115,22,0.3)]"
-              style={{ width: "70%" }}
+              style={{ width: `${Math.min(((selectedChild?.xp || 0) / (((selectedChild?.current_level || 1) + 1) * 10000)) * 100, 100)}%` }}
             />
           </div>
         </div>

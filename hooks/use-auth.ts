@@ -6,6 +6,7 @@ import {
 } from "@/services/auth.service";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export function useLogin() {
   const { login } = useAuth();
@@ -17,6 +18,7 @@ export function useLogin() {
     onSuccess: (data) => {
       // Save to context + localStorage
       login(data);
+      toast.success("Welcome back! ✨");
 
       // Redirect based on onboarding status
       if (data.onboarding_status === "completed") {
@@ -28,6 +30,7 @@ export function useLogin() {
 
     onError: (error) => {
       console.error("Login failed:", error);
+      toast.error(error.message || "Invalid email or password. Please try again.");
     },
   });
 }
