@@ -25,6 +25,14 @@ interface ChildInfo {
   interests: string[];
 }
 
+const emptyChild = (): ChildInfo => ({
+  firstName: "",
+  age: "",
+  gradeLevel: "",
+  spellingLevel: "",
+  interests: [],
+});
+
 // ProgressBar
 function ProgressBar({ step }: { step: number }) {
   return (
@@ -77,8 +85,8 @@ function Step1({
         Welcome to Spell Wizards!
       </h1>
       <p className="text-xs text-gray-400 mb-4 max-w-s">
-        Let&apos;s personalize your child&apos;s magical spelling journey. This will only
-        take a moment.
+        Let&apos;s personalize your child&apos;s magical spelling journey. This
+        will only take a moment.
       </p>
 
       <div className="w-[80%] text-left mb-4">
@@ -219,188 +227,264 @@ function Step2({
   );
 }
 
-// Step 3
-function Step3({
-  childInfo,
-  setChildInfo,
-  onNext,
-  onPrev,
+// Single Child Form
+function ChildForm({
+  info,
+  onChange,
 }: {
-  childInfo: ChildInfo;
-  setChildInfo: (v: ChildInfo) => void;
-  onNext: () => void;
-  onPrev: () => void;
+  info: ChildInfo;
+  onChange: (v: ChildInfo) => void;
 }) {
   return (
-    <div className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h1 className="text-xl font-bold text-[#1A0533] mb-0.5">
-        Tell us about your child
-      </h1>
-      <p className="text-[12px] text-gray-400 mb-2">
-        This helps us create a personalized spelling journey.
-      </p>
-
-      <div className="space-y-2 mb-2">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-1 opacity-60">
-              First Name
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Emma"
-              value={childInfo.firstName}
-              onChange={(e) =>
-                setChildInfo({ ...childInfo, firstName: e.target.value })
-              }
-              className="w-full h-8 px-3 bg-[#F8F7FF] border border-[#E5E0FF] rounded-md focus:border-[#7C3AED] outline-none text-xs"
-            />
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-1 opacity-60">
-              Age
-            </label>
-            <select
-              value={childInfo.age}
-              onChange={(e) =>
-                setChildInfo({ ...childInfo, age: e.target.value })
-              }
-              className="w-full h-8 px-3 bg-[#F8F7FF] border border-[#E5E0FF] rounded-md focus:border-[#7C3AED] outline-none appearance-none text-xs"
-            >
-              <option value="">Select age</option>
-              {[4, 5, 6, 7, 8, 9, 10, 11, 12].map((age) => (
-                <option key={age} value={age}>
-                  {age}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
+    <div className="space-y-2">
+      {/* Name + Age */}
+      <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
-            Grade Level
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-1 opacity-60">
+            First Name
           </label>
-          {/* FIX: bg color is now applied conditionally, not on the base class */}
-          <div className="grid grid-cols-4 gap-1.5">
-            {["Pre-K", "Kinder", "1st", "2nd", "3rd", "4th", "5th", "6th"].map(
-              (level) => (
-                <button
-                  key={level}
-                  onClick={() =>
-                    setChildInfo({ ...childInfo, gradeLevel: level })
-                  }
-                  className={`py-1 text-[12px] font-bold rounded-lg border transition-all ${
-                    childInfo.gradeLevel === level
-                      ? "bg-[#7C3AED] border-[#7C3AED] text-white shadow-sm shadow-purple-100"
-                      : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
-                  }`}
-                >
-                  {level}
-                </button>
-              ),
-            )}
-          </div>
+          <input
+            type="text"
+            placeholder="e.g. Emma"
+            value={info.firstName}
+            onChange={(e) => onChange({ ...info, firstName: e.target.value })}
+            className="w-full h-8 px-3 bg-[#F8F7FF] border border-[#E5E0FF] rounded-md focus:border-[#7C3AED] outline-none text-xs"
+          />
         </div>
-
         <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
-            Spelling Level
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-1 opacity-60">
+            Age
           </label>
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { id: "Beginner", icon: "🌱", desc: "Just starting" },
-              { id: "Elementary", icon: "🥪", desc: "Basic 3-4 letters" },
-              { id: "Intermediate", icon: "📖", desc: "Common words" },
-              { id: "Advanced", icon: "🏆", desc: "Strong speller" },
-            ].map((lvl) => (
-              <button
-                key={lvl.id}
-                onClick={() =>
-                  setChildInfo({ ...childInfo, spellingLevel: lvl.id })
-                }
-                className={`p-2 text-left rounded-xl border-2 transition-all ${
-                  childInfo.spellingLevel === lvl.id
-                    ? "border-[#7C3AED] bg-[#FDFDFF] ring-2 ring-[#7C3AED]/5"
-                    : "border-gray-100 bg-white hover:border-[#DDD6FE]"
-                }`}
-              >
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="text-xs">{lvl.icon}</span>
-                  <span className="font-bold text-[12px] text-[#1A0533]">
-                    {lvl.id}
-                  </span>
-                </div>
-                <p className="text-[8px] text-gray-400 font-medium">
-                  {lvl.desc}
-                </p>
-              </button>
+          <select
+            value={info.age}
+            onChange={(e) => onChange({ ...info, age: e.target.value })}
+            className="w-full h-8 px-3 bg-[#F8F7FF] border border-[#E5E0FF] rounded-md focus:border-[#7C3AED] outline-none appearance-none text-xs"
+          >
+            <option value="">Select age</option>
+            {[4, 5, 6, 7, 8, 9, 10, 11, 12].map((age) => (
+              <option key={age} value={age}>
+                {age}
+              </option>
             ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
-            Interests <span className="font-normal">(up to 4)</span>
-          </label>
-          <div className="flex flex-wrap gap-1.5 justify-center">
-            {[
-              "Animals",
-              "Space",
-              "Sports",
-              "Music",
-              "Art",
-              "Science",
-              "Nature",
-              "Games",
-            ].map((interest) => (
-              <button
-                key={interest}
-                onClick={() => {
-                  const current = childInfo.interests;
-                  if (current.includes(interest)) {
-                    setChildInfo({
-                      ...childInfo,
-                      interests: current.filter((i) => i !== interest),
-                    });
-                  } else if (current.length < 4) {
-                    setChildInfo({
-                      ...childInfo,
-                      interests: [...current, interest],
-                    });
-                  }
-                }}
-                className={`px-3 py-1.5 text-[9px] font-bold rounded-full border transition-all ${
-                  childInfo.interests.includes(interest)
-                    ? "bg-[#7C3AED] text-white shadow-sm shadow-purple-100"
-                    : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
-                }`}
-              >
-                {interest}
-              </button>
-            ))}
-          </div>
+          </select>
         </div>
       </div>
 
-      <div className="flex w-full gap-3 mt-auto">
+      {/* Grade Level */}
+      <div>
+        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
+          Grade Level
+        </label>
+        <div className="grid grid-cols-4 gap-1.5">
+          {["Pre-K", "Kinder", "1st", "2nd", "3rd", "4th", "5th", "6th"].map(
+            (level) => (
+              <button
+                key={level}
+                onClick={() => onChange({ ...info, gradeLevel: level })}
+                className={`py-1 text-[12px] font-bold rounded-lg border transition-all ${
+                  info.gradeLevel === level
+                    ? "bg-[#7C3AED] border-[#7C3AED] text-white shadow-sm shadow-purple-100"
+                    : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
+                }`}
+              >
+                {level}
+              </button>
+            ),
+          )}
+        </div>
+      </div>
+
+      {/* Spelling Level */}
+      <div>
+        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
+          Spelling Level
+        </label>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { id: "Beginner", icon: "🌱", desc: "Just starting" },
+            { id: "Elementary", icon: "🥪", desc: "Basic 3-4 letters" },
+            { id: "Intermediate", icon: "📖", desc: "Common words" },
+            { id: "Advanced", icon: "🏆", desc: "Strong speller" },
+          ].map((lvl) => (
+            <button
+              key={lvl.id}
+              onClick={() => onChange({ ...info, spellingLevel: lvl.id })}
+              className={`p-2 text-left rounded-xl border-2 transition-all ${
+                info.spellingLevel === lvl.id
+                  ? "border-[#7C3AED] bg-[#FDFDFF] ring-2 ring-[#7C3AED]/5"
+                  : "border-gray-100 bg-white hover:border-[#DDD6FE]"
+              }`}
+            >
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-xs">{lvl.icon}</span>
+                <span className="font-bold text-[12px] text-[#1A0533]">
+                  {lvl.id}
+                </span>
+              </div>
+              <p className="text-[8px] text-gray-400 font-medium">{lvl.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Interests */}
+      <div>
+        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A0533] mb-2 opacity-60 text-center">
+          Interests <span className="font-normal">(up to 4)</span>
+        </label>
+        <div className="flex flex-wrap gap-1.5 justify-center">
+          {[
+            "Animals",
+            "Space",
+            "Sports",
+            "Music",
+            "Art",
+            "Science",
+            "Nature",
+            "Games",
+          ].map((interest) => (
+            <button
+              key={interest}
+              onClick={() => {
+                const current = info.interests;
+                if (current.includes(interest)) {
+                  onChange({
+                    ...info,
+                    interests: current.filter((i) => i !== interest),
+                  });
+                } else if (current.length < 4) {
+                  onChange({ ...info, interests: [...current, interest] });
+                }
+              }}
+              className={`px-3 py-1.5 text-[9px] font-bold rounded-full border transition-all ${
+                info.interests.includes(interest)
+                  ? "bg-[#7C3AED] text-white shadow-sm shadow-purple-100"
+                  : "bg-[#F8F7FF] border-gray-100 text-[#4B3A7A] hover:bg-gray-50"
+              }`}
+            >
+              {interest}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Step 3
+function Step3({
+  childCount,
+  kids,
+  setKids,
+  onNext,
+  onPrev,
+}: {
+  childCount: number;
+  kids: ChildInfo[];
+  setKids: (v: ChildInfo[]) => void;
+  onNext: () => void;
+  onPrev: () => void;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const current = kids[currentIndex];
+
+  const updateCurrent = (updated: ChildInfo) => {
+    const copy = [...kids];
+    copy[currentIndex] = updated;
+    setKids(copy);
+  };
+
+  const isCurrentValid =
+    !!current.firstName &&
+    !!current.age &&
+    !!current.gradeLevel &&
+    !!current.spellingLevel;
+
+  const isLastChild = currentIndex === childCount - 1;
+
+  const handleNext = () => {
+    if (!isCurrentValid) return;
+    if (isLastChild) {
+      onNext();
+    } else {
+      setCurrentIndex((i) => i + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentIndex === 0) {
+      onPrev(); // go back to Step 2
+    } else {
+      setCurrentIndex((i) => i - 1);
+    }
+  };
+
+  return (
+    <div className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-1">
+        <div>
+          <h1 className="text-xl font-bold text-[#1A0533]">
+            Tell us about your child
+          </h1>
+          <p className="text-[12px] text-gray-400">
+            This helps us create a personalized spelling journey.
+          </p>
+        </div>
+        {/* Child index indicator — only show if more than 1 child */}
+        {childCount > 1 && (
+          <div className="shrink-0 ml-2 px-2.5 py-1 bg-[#F3F0FF] rounded-lg text-center">
+            <p className="text-[10px] font-bold text-[#7C3AED]">
+              Child {currentIndex + 1}/{childCount}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Child tabs — clickable dots if multiple children */}
+      {childCount > 1 && (
+        <div className="flex gap-1.5 mb-3">
+          {Array.from({ length: childCount }).map((_, i) => {
+            const filled =
+              !!kids[i].firstName &&
+              !!kids[i].age &&
+              !!kids[i].gradeLevel &&
+              !!kids[i].spellingLevel;
+            return (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === currentIndex
+                    ? "bg-[#7C3AED] w-6"
+                    : filled
+                      ? "bg-[#A78BFA] w-3"
+                      : "bg-[#E5E0FF] w-3"
+                }`}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Form for current child */}
+      <ChildForm info={current} onChange={updateCurrent} />
+
+      {/* Navigation */}
+      <div className="flex w-full gap-3 mt-3">
         <button
-          onClick={onPrev}
+          onClick={handleBack}
           className="flex-1 h-9 bg-white border border-gray-200 text-[#1A0533] rounded-xl font-bold transition-all text-sm"
         >
           Back
         </button>
         <button
-          onClick={onNext}
-          disabled={
-            !childInfo.firstName ||
-            !childInfo.age ||
-            !childInfo.gradeLevel ||
-            !childInfo.spellingLevel
-          }
+          onClick={handleNext}
+          disabled={!isCurrentValid}
           className="flex-2 h-9 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-[#DDD6FE] text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 text-sm"
         >
-          Continue
+          {isLastChild ? "Continue" : `Next Child →`}
         </button>
       </div>
     </div>
@@ -409,14 +493,16 @@ function Step3({
 
 // Step 4
 function Step4({
-  childInfo,
+  kids,
   onNext,
   onPrev,
 }: {
-  childInfo: ChildInfo;
+  kids: ChildInfo[];
   onNext: () => void;
   onPrev: () => void;
 }) {
+  const firstChild = kids[0];
+
   return (
     <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="w-12 h-12 bg-[#FFFBEB] rounded-full flex items-center justify-center mb-4">
@@ -427,7 +513,10 @@ function Step4({
       </h1>
       <p className="text-[10px] text-gray-400 mb-6 px-4">
         Based on what you told us, here&apos;s what we recommend for{" "}
-        {childInfo.firstName || "your child"}.
+        {kids.length === 1
+          ? firstChild.firstName || "your child"
+          : `your ${kids.length} children`}
+        .
       </p>
 
       <div className="w-full space-y-2.5 mb-8">
@@ -449,8 +538,8 @@ function Step4({
           {
             icon: Star,
             title: "Themed Word Lists",
-            desc: `Custom lists based on ${childInfo.firstName}'s interests: ${
-              childInfo.interests.slice(0, 2).join(", ") || "Magic"
+            desc: `Custom lists based on ${firstChild.firstName}&apos;s interests: ${
+              firstChild.interests.slice(0, 2).join(", ") || "Magic"
             }.`,
             color: "bg-[#FFFBEB]",
             iconColor: "text-[#F59E0B]",
@@ -505,10 +594,10 @@ function Step4({
 // Step 5
 function Step5({
   parentName,
-  childInfo,
+  kids,
 }: {
   parentName: string;
-  childInfo: ChildInfo;
+  kids: ChildInfo[];
 }) {
   return (
     <div className="flex flex-col px-8 items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -518,34 +607,42 @@ function Step5({
       <h1 className="text-2xl font-bold text-[#1A0533] mb-1">
         You&apos;re All Set, {parentName}!
       </h1>
-      <p className="text-[11px] text-gray-400 mb-8">
+      <p className="text-[11px] text-gray-400 mb-4">
         Your child&apos;s magical spelling journey begins now.
       </p>
 
-      <div className="w-full bg-white border border-[#F3F0FF] p-4 rounded-2xl text-left mb-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-[#7C3AED] rounded-3xl flex items-center justify-center text-white font-bold text-lg">
-            {childInfo.firstName[0]?.toUpperCase() || "C"}
+      {/* All children summary */}
+      <div className="w-full space-y-2 mb-4">
+        {kids.map((child, idx) => (
+          <div
+            key={idx}
+            className="w-full bg-white border border-[#F3F0FF] p-3 rounded-2xl text-left shadow-[0_10px_30px_rgba(0,0,0,0.02)]"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-[#7C3AED] rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                {child.firstName[0]?.toUpperCase() || "C"}
+              </div>
+              <div>
+                <h3 className="font-bold text-[#1A0533] text-sm">
+                  {child.firstName}
+                </h3>
+                <p className="text-[11px] text-gray-400">
+                  {child.gradeLevel} • Age {child.age}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {child.interests.map((i) => (
+                <span
+                  key={i}
+                  className="px-2 py-0.5 bg-[#F3F0FF] text-[#7C3AED] text-[8px] font-extrabold rounded-md uppercase tracking-tighter"
+                >
+                  {i}
+                </span>
+              ))}
+            </div>
           </div>
-          <div>
-            <h3 className="font-bold text-[#1A0533] text-lg">
-              {childInfo.firstName}
-            </h3>
-            <p className="text-[12px] text-gray-400">
-              {childInfo.gradeLevel} • Age {childInfo.age}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {childInfo.interests.map((i) => (
-            <span
-              key={i}
-              className="px-2 py-1 bg-[#F3F0FF] text-[#7C3AED] text-[9px] font-extrabold rounded-md uppercase tracking-tighter"
-            >
-              {i}
-            </span>
-          ))}
-        </div>
+        ))}
       </div>
 
       <div className="w-full text-left space-y-3 mb-6">
@@ -583,13 +680,23 @@ export default function OnboardingPage() {
   const [step, setStep] = useState<OnboardingStep>(1);
   const [parentName, setParentName] = useState("");
   const [childCount, setChildCount] = useState(1);
-  const [childInfo, setChildInfo] = useState<ChildInfo>({
-    firstName: "",
-    age: "",
-    gradeLevel: "",
-    spellingLevel: "",
-    interests: [],
-  });
+
+  // Array of child info, resized whenever childCount changes
+  const [kids, setKids] = useState<ChildInfo[]>([emptyChild()]);
+
+  const handleSetChildCount = (count: number) => {
+    setChildCount(count);
+    // Grow or shrink the array to match the new count
+    setKids((prev) => {
+      if (count > prev.length) {
+        return [
+          ...prev,
+          ...Array.from({ length: count - prev.length }, emptyChild),
+        ];
+      }
+      return prev.slice(0, count);
+    });
+  };
 
   const nextStep = () =>
     setStep((prev) => (prev < 5 ? ((prev + 1) as OnboardingStep) : prev));
@@ -615,29 +722,24 @@ export default function OnboardingPage() {
                 <Step2
                   parentName={parentName}
                   childCount={childCount}
-                  setChildCount={setChildCount}
+                  setChildCount={handleSetChildCount}
                   onNext={nextStep}
                   onPrev={prevStep}
                 />
               )}
               {step === 3 && (
                 <Step3
-                  childInfo={childInfo}
-                  setChildInfo={setChildInfo}
+                  childCount={childCount}
+                  kids={kids}
+                  setKids={setKids}
                   onNext={nextStep}
                   onPrev={prevStep}
                 />
               )}
               {step === 4 && (
-                <Step4
-                  childInfo={childInfo}
-                  onNext={nextStep}
-                  onPrev={prevStep}
-                />
+                <Step4 kids={kids} onNext={nextStep} onPrev={prevStep} />
               )}
-              {step === 5 && (
-                <Step5 parentName={parentName} childInfo={childInfo} />
-              )}
+              {step === 5 && <Step5 parentName={parentName} kids={kids} />}
             </div>
           </div>
         </main>
