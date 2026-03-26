@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://illatively-crackly-chuck.ngrok-free.dev/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
     accept: "application/json",
-    "ngrok-skip-browser-warning": "true", // Skip ngrok browser warning for development
+    // "ngrok-skip-browser-warning": "true", // Skip ngrok browser warning for development
   },
 });
 
