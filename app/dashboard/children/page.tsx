@@ -29,6 +29,7 @@ export default function MyChildrenPage() {
             <div key={i} className="h-32 bg-gray-100 rounded-[2rem] animate-pulse" />
           ))
         ) : children && children.length > 0 ? (
+          children.map((child: any) => (
             <div key={child.child_id} className="bg-white rounded-[2rem] border border-dashboard-border p-5 md:p-6 shadow-sm hover:shadow-lg transition-all duration-300 group relative">
               <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5 md:gap-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-5 text-center sm:text-left">
@@ -99,10 +100,10 @@ export default function MyChildrenPage() {
                   <button className="p-2 text-gray-400 hover:text-dashboard-purple hover:bg-gray-50 rounded-lg absolute top-4 right-4 sm:top-6 sm:right-6 xl:static">
                     <MoreVertical size={18} />
                   </button>
-                </div>
               </div>
             </div>
-          ))
+          </div>
+        ))
         ) : (
           <div className="bg-white p-12 rounded-[2rem] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center text-center">
             <h4 className="text-lg font-bold text-[#14062B] mb-2">No children found</h4>
