@@ -113,9 +113,9 @@ export default function NotificationDrawer({ isOpen, onClose }: NotificationDraw
         {filteredNotifications.map((notif) => (
           <div 
             key={notif.id} 
-            className={`p-6 hover:bg-gray-50 transition-colors cursor-pointer group flex gap-4 ${!notif.read ? "bg-purple-50/30" : ""}`}
+            className={`p-4 md:p-6 hover:bg-gray-50 transition-colors cursor-pointer group flex gap-3 md:gap-4 ${!notif.read ? "bg-purple-50/30" : ""}`}
           >
-            <div className="w-10 h-10 rounded-xl bg-white border border-dashboard-border flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white border border-dashboard-border flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform flex-shrink-0">
               {getIcon(notif.type)}
             </div>
             <div className="flex-1 space-y-1">

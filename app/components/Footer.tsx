@@ -1,7 +1,12 @@
+"use client";
+
 import type { NextPage } from "next";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const Footer: NextPage = () => {
+  const pathname = usePathname();
+  const getHref = (hash: string) => pathname === '/' ? `#${hash}` : `/#${hash}`;
   return (
     <footer className="w-full bg-[#7C3AED] flex flex-col items-center py-18 px-30 gap-14 text-left text-white font-nunito">
       {/* Top section */}
@@ -24,10 +29,10 @@ const Footer: NextPage = () => {
         <div className="flex flex-col gap-4 w-52">
           <h3 className="font-extrabold text-base">Product</h3>
           <div className="flex flex-col gap-3 text-white/60 font-poppins">
-            <span>Features</span>
-            <span>Pricing</span>
-            <span>Download App</span>
-            <span>Updates</span>
+            <a href={getHref("features")} className="hover:text-white transition-colors">Features</a>
+            <a href={getHref("pricing")} className="hover:text-white transition-colors">Pricing</a>
+            <a href="#" className="hover:text-white transition-colors">Download App</a>
+            <a href="#" className="hover:text-white transition-colors">Updates</a>
           </div>
         </div>
 
@@ -35,10 +40,10 @@ const Footer: NextPage = () => {
         <div className="flex flex-col gap-4 w-52">
           <h3 className="font-extrabold text-base">Company</h3>
           <div className="flex flex-col gap-3 text-white/60 font-poppins">
-            <span>About Us</span>
-            <span>Blog</span>
-            <span>Careers</span>
-            <span>Contact</span>
+            <a href="#" className="hover:text-white transition-colors">About Us</a>
+            <a href="#" className="hover:text-white transition-colors">Blog</a>
+            <a href="#" className="hover:text-white transition-colors">Careers</a>
+            <a href="#" className="hover:text-white transition-colors">Contact</a>
           </div>
         </div>
 
@@ -46,10 +51,10 @@ const Footer: NextPage = () => {
         <div className="flex flex-col gap-4 w-52">
           <h3 className="font-extrabold text-base">Support</h3>
           <div className="flex flex-col gap-3 text-white/60 font-poppins">
-            <span>Help Center</span>
-            <span>FAQs</span>
-            <span>Privacy Policy</span>
-            <span>Terms of Service</span>
+            <a href="#" className="hover:text-white transition-colors">Help Center</a>
+            <a href="#" className="hover:text-white transition-colors">FAQs</a>
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>
@@ -58,10 +63,10 @@ const Footer: NextPage = () => {
       <div className="w-full flex justify-between items-center border-t border-white/20 pt-4 text-xs text-white/50 font-poppins flex-wrap gap-4">
         <p>© 2026 Spell Wizards. All rights reserved.</p>
         <div className="flex gap-6">
-          <span>Twitter</span>
-          <span>Instagram</span>
-          <span>Facebook</span>
-          <span>YouTube</span>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors cursor-pointer">Twitter</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors cursor-pointer">Instagram</a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors cursor-pointer">Facebook</a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors cursor-pointer">YouTube</a>
         </div>
       </div>
     </footer>

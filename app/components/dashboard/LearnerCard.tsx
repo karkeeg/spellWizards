@@ -22,7 +22,7 @@ export default function LearnerCard({
   const progress = Math.min((xp / overallXp) * 100, 100);
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-dashboard-border shadow-sm hover:shadow-lg transition-all duration-300 group">
+    <div className="bg-white p-5 md:p-6 rounded-3xl border border-dashboard-border shadow-sm hover:shadow-lg transition-all duration-300 group">
       <div className="flex items-start justify-between mb-6">
         <div className="flex gap-4">
           <div
@@ -48,23 +48,23 @@ export default function LearnerCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center border border-orange-100/50 group-hover:bg-orange-100 transition-colors">
-            <Flame size={18} className="text-orange-500" />
+      <div className="grid grid-cols-2 gap-4 md:gap-6 mb-6">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-orange-50 flex items-center justify-center border border-orange-100/50 group-hover:bg-orange-100 transition-colors shrink-0">
+            <Flame size={16} className="text-orange-500 md:size-[18px]" />
           </div>
           <div>
-            <p className="text-lg font-bold text-[#14062B]">{streak}d</p>
-            <p className="text-[10px] text-dashboard-text-muted font-bold uppercase tracking-wider">Streak</p>
+            <p className="text-base md:text-lg font-bold text-[#14062B]">{streak}d</p>
+            <p className="text-[9px] md:text-[10px] text-dashboard-text-muted font-bold uppercase tracking-wider">Streak</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100/50 group-hover:bg-blue-100 transition-colors">
-            <Zap size={18} className="text-blue-500" />
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100/50 group-hover:bg-blue-100 transition-colors shrink-0">
+            <Zap size={16} className="text-blue-500 md:size-[18px]" />
           </div>
           <div>
-            <p className="text-lg font-bold text-[#14062B]">{xp.toLocaleString()}</p>
-            <p className="text-[10px] text-dashboard-text-muted font-bold uppercase tracking-wider">XP</p>
+            <p className="text-base md:text-lg font-bold text-[#14062B]">{xp.toLocaleString()}</p>
+            <p className="text-[9px] md:text-[10px] text-dashboard-text-muted font-bold uppercase tracking-wider">XP</p>
           </div>
         </div>
       </div>

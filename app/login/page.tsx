@@ -62,7 +62,7 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <div className="w-[70%] flex items-center gap-4 mb-4">
+        <div className="w-[80%] flex items-center gap-4 mb-4">
           <div className="h-px flex-1 bg-gray-200"></div>
           <span className="text-sm text-gray-400">Or</span>
           <div className="h-px flex-1 bg-gray-200"></div>
@@ -71,7 +71,7 @@ export default function LoginPage() {
         <div className="w-[80%] space-y-4">
           <input
             type="email"
-            placeholder="lxmnregme21@gmail.com"
+            placeholder="example@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full h-10 px-4 border-2 border-purple-100 rounded-xl focus:border-purple-600 outline-none transition-colors text-sm"
@@ -79,7 +79,7 @@ export default function LoginPage() {
           <button
             onClick={handleContinue}
             disabled={isLoading || !email.includes("@")}
-            className={`w-[40%] h-10 rounded-xl font-semibold transition-all gap-2 ${
+            className={`w-full h-10 rounded-xl font-semibold transition-all gap-2 ${
               isLoading
                 ? "bg-[#C4B5FD] cursor-wait"
                 : "bg-[#7C3AED] hover:bg-[#6D28D9] shadow-lg shadow-purple-100"

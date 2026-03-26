@@ -7,39 +7,59 @@ import { Users, Zap, Target, Flame, Sparkles, Plus } from "lucide-react";
 import { useParentProfile } from "@/hooks/use-parent-profile";
 import { useChildren } from "@/hooks/use-child";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function DashboardPage() {
   const { data: profile, isLoading: isProfileLoading } = useParentProfile();
   const { data: children, isLoading: isChildrenLoading } = useChildren();
 
   const firstName = profile?.parent_name || (isProfileLoading ? " " : "Parent");
-  
+
   const totalStudents = children?.length || 0;
   const totalXp = children?.reduce((acc, c) => acc + c.xp, 0) || 0;
-  const bestStreak = children?.length 
-    ? Math.max(...children.map(c => c.streak_days)) 
+  const bestStreak = children?.length
+    ? Math.max(...children.map((c) => c.streak_days))
     : 0;
-  const bestStreakChild = children?.find(c => c.streak_days === bestStreak)?.name || "N/A";
+  const bestStreakChild =
+    children?.find((c) => c.streak_days === bestStreak)?.name || "N/A";
 
   console.log("Children data:", children);
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    if (hour < 21) return "Good Evening";
+    return "Good Night";
+  };
+
+  const greeting = getGreeting();
+
   return (
     <div className="space-y-6 pb-8">
       {/* Welcome Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#7C3AED] via-[#8B5CF6] to-[#A78BFA] rounded-[2rem] p-8 md:p-10 text-white shadow-xl shadow-purple-200/50 group">
-        <div className="relative z-10 max-w-2xl">
-          <div className="flex items-center gap-3 mb-4 animate-fade-in [animation-delay:0.1s]">
-            <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-widest border border-white/10 shadow-sm">
-              Dashboard
-            </span>
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#7C3AED] via-[#8B5CF6] to-[#A78BFA] rounded-[2rem] text-white shadow-xl shadow-purple-200/50 group">
+        <div className="relative z-10 flex flex-col md:flex-row justify-between min-h-[220px] md:min-h-[240px] lg:min-h-[280px]">
+          {/* Welcome Text Left */}
+          <div className="flex-1 w-full md:max-w-[70%] p-6 md:p-8 lg:p-12 z-10 flex flex-col justify-center text-center md:text-left">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-syne mb-2 md:mb-3 leading-tight animate-fade-in [animation-delay:0.1s]">
+              {greeting}, {firstName}!
+            </h2>
+            <p className="text-[15px] md:text-base lg:text-[17px] text-white/90 font-medium animate-fade-in [animation-delay:0.2s]">
+              {totalStudents > 0
+                ? `You have ${totalStudents} active ${totalStudents === 1 ? "learner" : "learners"}. ${bestStreak > 0 ? `${bestStreakChild} had a great session today!` : "Let's learn something new today!"}`
+                : "Welcome! Add your first learner to start the adventure."}
+            </p>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-syne mb-6 leading-tight animate-fade-in [animation-delay:0.2s]">
-            Good Morning, {firstName}!
-          </h2>
-          <p className="text-lg md:text-xl text-purple-100 font-medium animate-fade-in [animation-delay:0.3s]">
-            {totalStudents > 0 
-              ? `You have ${totalStudents} active ${totalStudents === 1 ? 'learner' : 'learners'}. ${bestStreak > 0 ? `${bestStreakChild} has the longest streak!` : 'Keep up the momentum!'}`
-              : "Welcome! Add your first learner to start the adventure."}
-          </p>
+
+          {/* Magical Illustration Right */}
+          <div className="relative w-full h-[300px] md:absolute md:right-0 md:bottom-0 md:h-full md:w-[45%] lg:w-[40%] xl:w-[500px] z-0 flex-shrink-0 mt-4 md:mt-0 pointer-events-none translate-y-2 md:translate-y-0">
+            <Image
+              src="/dashboardGood.svg"
+              alt="Dashboard Banner"
+              fill
+              className="object-contain md:object-contain  drop-shadow-[0_20px_40px_rgba(26,5,51,0.3)] p-4 md:p-0 pointer-events-auto"
+            />
+          </div>
         </div>
 
         {/* Decorative Elements */}
@@ -59,7 +79,9 @@ export default function DashboardPage() {
         <StatCard
           title="Active Students"
           value={totalStudents.toString()}
-          label={totalStudents === 1 ? "1 Learner" : `${totalStudents} Learners`}
+          label={
+            totalStudents === 1 ? "1 Learner" : `${totalStudents} Learners`
+          }
           icon={Users}
           color="text-purple-600"
           bgColor="bg-purple-100"
@@ -96,7 +118,10 @@ export default function DashboardPage() {
           <h3 className="text-xl font-bold text-[#14062B] font-syne">
             Your Learners
           </h3>
-          <Link href="/dashboard/children" className="text-dashboard-purple text-xs font-bold hover:underline transition-all flex items-center gap-1 group">
+          <Link
+            href="/dashboard/children"
+            className="text-dashboard-purple text-md font-bold hover:underline transition-all flex items-center gap-1 group"
+          >
             See All{" "}
             <span className="group-hover:translate-x-1 transition-transform">
               →
@@ -107,7 +132,10 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {isChildrenLoading ? (
             Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="h-48 bg-gray-100 rounded-3xl animate-pulse" />
+              <div
+                key={i}
+                className="h-48 bg-gray-100 rounded-3xl animate-pulse"
+              />
             ))
           ) : children && children.length > 0 ? (
             children.map((child) => (
@@ -120,8 +148,16 @@ export default function DashboardPage() {
                 streak={child.streak_days}
                 xp={child.xp}
                 overallXp={(child.current_level || 1) * 10000}
-                lastActive={child.created_at ? new Date(child.created_at).toLocaleDateString() : "Recently"}
-                avatarColor={child.avatar_url?.startsWith("#") ? child.avatar_url : "#8B5CF6"}
+                lastActive={
+                  child.created_at
+                    ? new Date(child.created_at).toLocaleDateString()
+                    : "Recently"
+                }
+                avatarColor={
+                  child.avatar_url?.startsWith("#")
+                    ? child.avatar_url
+                    : "#8B5CF6"
+                }
               />
             ))
           ) : (
@@ -129,11 +165,14 @@ export default function DashboardPage() {
               <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
                 <Users className="text-dashboard-purple" size={32} />
               </div>
-              <h4 className="text-lg font-bold text-[#14062B] mb-2">No learners added yet</h4>
-              <p className="text-sm text-dashboard-text-muted mb-6 max-w-sm">
-                Add your children to start tracking their magical spelling journey!
+              <h4 className="text-lg font-bold text-[#14062B] mb-2">
+                No learners added yet
+              </h4>
+              <p className="text-md text-dashboard-text-muted mb-6 max-w-sm">
+                Add your children to start tracking their magical spelling
+                journey!
               </p>
-              <Link 
+              <Link
                 href="/dashboard/add-child"
                 className="bg-dashboard-purple text-white px-6 py-3 rounded-xl font-bold hover:bg-[#6D28D9] transition-all"
               >

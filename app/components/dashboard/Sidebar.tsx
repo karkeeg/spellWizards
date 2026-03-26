@@ -4,15 +4,16 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  BarChart3, 
-  Users, 
-  FileText, 
-  UserPlus, 
+import {
+  LayoutDashboard,
+  BarChart3,
+  Users,
+  FileText,
+  UserPlus,
   Settings,
   ChevronRight,
-  LogOut
+  LogOut,
+  X,
 } from "lucide-react";
 
 import { useParentProfile } from "@/hooks/use-parent-profile";
@@ -27,7 +28,12 @@ const navItems = [
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { data: profile, isLoading } = useParentProfile();
   const { logout } = useAuth();
@@ -43,15 +49,25 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 h-screen bg-white border-r border-dashboard-border flex flex-col fixed left-0 top-0 z-30">
+    <aside
+      className={`w-64 h-screen bg-white border-r border-dashboard-border flex flex-col fixed left-0 top-0 z-40 transition-transform duration-300 md:translate-x-0 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Logo Section */}
-      <div className="p-6 pb-4 flex flex-col gap-4">
+      <div className="p-6 pb-4 flex flex-col gap-4 relative">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-6 p-2 text-gray-400 hover:text-dashboard-purple md:hidden"
+        >
+          <X size={20} />
+        </button>
         <Link href="/" className="flex items-center gap-2">
-          <Image 
-            src="/spellWizard.svg" 
-            alt="SpellWizards Logo" 
-            width={140} 
-            height={40} 
+          <Image
+            src="/spellWizard.svg"
+            alt="SpellWizards Logo"
+            width={140}
+            height={40}
             className="h-auto w-auto"
           />
         </Link>
@@ -65,20 +81,23 @@ export default function Sidebar() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
-          
+
           return (
             <Link
               key={item.name}
               href={item.href}
               className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 group ${
-                isActive 
-                  ? "bg-[#F3E8FF] text-dashboard-purple shadow-md shadow-purple-100/30" 
+                isActive
+                  ? "bg-[#F3E8FF] text-dashboard-purple shadow-md shadow-purple-100/30"
                   : "text-dashboard-text-muted hover:bg-gray-50 hover:text-dashboard-purple"
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon size={20} className={`${isActive ? "text-dashboard-purple" : "text-gray-400 group-hover:text-dashboard-purple"}`} />
-                <span className="text-sm font-medium">{item.name}</span>
+                <Icon
+                  size={20}
+                  className={`${isActive ? "text-dashboard-purple" : "text-gray-400 group-hover:text-dashboard-purple"}`}
+                />
+                <span className="text-md font-medium">{item.name}</span>
               </div>
               {isActive && <ChevronRight size={14} />}
             </Link>
@@ -98,21 +117,27 @@ export default function Sidebar() {
           </div>
           <div className="flex flex-col overflow-hidden">
             <span className="text-sm font-bold text-[#14062B] truncate">
-              {isLoading ? "Loading..." : profile?.parent_name || "Guest Parent"}
+              {isLoading
+                ? "Loading..."
+                : profile?.parent_name || "Guest Parent"}
             </span>
             <span className="text-[10px] text-dashboard-text-muted truncate">
-              Parent Account • {profile?.onboarding_status === "completed" ? "Pro" : "Basic"}
+              Parent Account •{" "}
+              {profile?.onboarding_status === "completed" ? "Pro" : "Basic"}
             </span>
           </div>
         </div>
-        
+
         {/* Logout Button */}
-        <button 
+        <button
           onClick={logout}
           className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300 group shrink-0"
           title="Logout"
         >
-          <LogOut size={20} className="group-hover:scale-110 transition-transform" />
+          <LogOut
+            size={20}
+            className="group-hover:scale-110 transition-transform"
+          />
         </button>
       </div>
     </aside>

@@ -16,15 +16,15 @@ interface ChildSelectorProps {
 
 export default function ChildSelector({ children_list, selectedId, onSelect }: ChildSelectorProps) {
   return (
-    <div className="flex gap-4 mb-8">
+    <div className="flex gap-3 mb-6 md:mb-8 overflow-x-auto hide-scrollbar pb-1">
       {children_list.map((child) => (
         <button
           key={child.id}
           onClick={() => onSelect(child.id)}
-          className={`flex items-center gap-3 px-6 py-2.5 rounded-xl border-2 transition-all duration-300 font-bold text-sm ${
+          className={`flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-2.5 rounded-xl border-2 transition-all duration-300 font-bold text-xs md:text-sm whitespace-nowrap shrink-0 ${
             selectedId === child.id
               ? "bg-[#F3E8FF] border-dashboard-purple text-dashboard-purple shadow-sm"
-              : "bg-white border-transparent text-gray-400 hover:border-gray-200"
+              : "bg-white border-transparent text-gray-400 hover:border-gray-200 hover:bg-gray-50/50"
           }`}
         >
           <div 

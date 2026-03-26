@@ -1,22 +1,16 @@
 import { NextPage } from "next";
 import Image from "next/image";
+import BgBlur from "./BgBlur";
 
 const Hero: NextPage = () => {
   return (
     <div className="w-full relative bg-white flex flex-col items-center isolation-auto gap-12 md:gap-[60px] text-center font-syne overflow-x-hidden pb-12 md:pb-18">
       {/* GRADIENT BACKGROUND */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        {/* LEFT PURPLE BLOB */}
-        <div className="absolute top-[-100px] left-[-150px] w-[500px] h-[500px] bg-purple-600 rounded-full blur-[140px] opacity-70" />
-
-        {/* RIGHT RED/ORANGE BLOB */}
-        <div className="absolute top-[50px] right-[-150px] w-[500px] h-[500px] bg-red-500 rounded-full blur-[140px] opacity-70" />
-
-        {/* CENTER ORANGE MIX */}
-        <div className="absolute bottom-[-150px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-400 rounded-full blur-[160px] opacity-70" />
+      <div className="absolute inset-0 overflow-hidden flex items-center justify-center pointer-events-none opacity-40">
+        <BgBlur className="w-full h-full min-w-[1400px] max-w-none object-cover" />
       </div>
 
-      <div className="w-full max-w-[1265px] flex flex-col items-center pt-12 md:pt-[40px] z-[1] shrink-0 px-4 md:px-0">
+      <div className="w-full max-w-[1265px] flex flex-col items-center pt-[100px] md:pt-[140px] z-[1] shrink-0 px-4 md:px-0">
         <div className="w-full max-w-[1075px] flex flex-col items-center gap-2 md:gap-[18px]">
           <div className="self-stretch flex flex-col items-center gap-2 md:gap-[12px]">
             <h1 className="self-stretch relative text-[32px] sm:text-[40px] md:text-[54px] leading-[1.1] md:leading-[114%] font-semibold text-[#1A0533] tracking-tight">
@@ -33,8 +27,8 @@ const Hero: NextPage = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-[16px] text-black font-poppins w-full sm:w-auto">
             <a
-              href="/signup"
-              className="w-full sm:w-[150px] rounded-[10px] bg-white border border-black/10 hover:border-black flex items-center justify-center px-6 py-3 font-medium transition-all duration-300"
+              href="/#pricing"
+              className="w-full sm:w-[150px] rounded-[10px] bg-white border border-[#1A0533] text-[#1A0533] hover:bg-gray-50 flex items-center justify-center px-6 py-3 font-bold transition-all duration-300"
             >
               Try for Free
             </a>
@@ -60,7 +54,7 @@ const Hero: NextPage = () => {
           </div>
 
           {/* Floating Card 1 (Left) - Hidden on small mobile, floating on desktop */}
-          <div className="hidden lg:block absolute top-[16%] left-[5%] xl:left-[65.5px] w-[32%] xl:w-[408.7px] aspect-[408.7/297.3] animate-float">
+          <div className="hidden lg:block absolute top-[16%] left-[5%] xl:left-[65.5px] w-[32%] xl:w-[408.7px] aspect-[408.7/297.3] animate-float -rotate-6 lg:-rotate-12">
             <Image
               src="/herocards/leftCard.svg"
               alt="Left Card"
@@ -70,7 +64,7 @@ const Hero: NextPage = () => {
           </div>
 
           {/* Floating Card 2 (Right) - Hidden on small mobile, floating delayed */}
-          <div className="hidden lg:block absolute top-[25%] right-[5%] xl:left-[912.5px] w-[16%] xl:w-[202.7px] aspect-[202.7/189.2] animate-float-delayed">
+          <div className="hidden lg:block absolute top-[25%] right-[5%] xl:left-[912.5px] w-[16%] xl:w-[202.7px] aspect-[202.7/189.2] animate-float-delayed rotate-6 lg:rotate-12">
             <Image
               src="/herocards/Streak.svg"
               alt="Streak Card"

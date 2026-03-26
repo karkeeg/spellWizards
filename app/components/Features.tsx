@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Features: FC = () => {
     return (
-        <section className="w-full bg-white py-4 md:py-8 font-poppins">
+        <section id="features" className="w-full bg-white py-4 md:py-8 font-poppins">
             <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
                 {/* Header */}
                 <div className="text-center mb-6 md:mb-8">

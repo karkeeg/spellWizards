@@ -1,4 +1,5 @@
 import React from "react";
+import BgBlur from "./BgBlur";
 
 type Plan = {
   name: string;
@@ -56,13 +57,13 @@ const plans: Plan[] = [
 
 export default function Pricing() {
   return (
-    <section className="relative py-20 px-6 flex justify-center bg-white">
-      
+    <section id="pricing" className="relative py-20 px-6 flex justify-center bg-white overflow-hidden">
       {/* Blur Background */}
-      <div className="absolute top-20 w-[1600px] h-[600px] bg-purple-400 opacity-20 blur-[300px]" />
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
+        <BgBlur className="w-full h-full min-w-[1200px] max-w-none object-cover" />
+      </div>
 
       <div className="relative max-w-6xl w-full text-center">
-
         {/* Title */}
         <p className="text-sm font-medium text-gray-600">Pricing</p>
         <h2 className="text-4xl font-semibold text-[#1a0533] mt-2 mb-12">
@@ -71,7 +72,6 @@ export default function Pricing() {
 
         {/* Cards */}
         <div className="grid md:grid-cols-3 gap-6">
-
           {plans.map((plan, i) => (
             <div
               key={i}
@@ -82,7 +82,6 @@ export default function Pricing() {
                   : "border border-purple-200 shadow-md"
               }`}
             >
-
               {/* Popular badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-xs px-4 py-1 rounded-full font-bold tracking-wide">
@@ -95,7 +94,7 @@ export default function Pricing() {
               </h3>
 
               {/* Price */}
-              <div className="mt-3 text-purple-700 font-bold text-4xl">
+              <div className="mt-3 text-purple-700 font-bold font-syne text-5xl">
                 {plan.price}
                 <span className="text-sm text-gray-500 font-medium ml-1">
                   {plan.duration}

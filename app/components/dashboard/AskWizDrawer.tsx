@@ -71,13 +71,13 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
             <span className="text-sm font-bold text-dashboard-purple tracking-tight">Get Wiz+</span>
           </div>
           
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors text-dashboard-text-muted">
+          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors text-dashboard-text-muted sm:block hidden">
             <MoreHorizontal size={20} />
           </button>
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 p-6 space-y-6 overflow-y-auto scrollbar-hide bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-purple-50/50 via-transparent to-transparent">
+        <div className="flex-1 p-4 md:p-6 space-y-6 overflow-y-auto scrollbar-hide bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-purple-50/50 via-transparent to-transparent">
           {messages.map((msg) => (
             <div 
               key={msg.id} 
@@ -114,7 +114,7 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
         </div>
 
         {/* Input Area */}
-        <div className="p-6 bg-white border-t border-dashboard-border shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.05)]">
+        <div className="p-4 md:p-6 bg-white border-t border-dashboard-border shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.05)]">
           <div className="relative group">
             <input
               type="text"

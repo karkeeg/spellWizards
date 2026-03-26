@@ -34,7 +34,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="w-full bg-[#f3eeff] py-8 md:py-12 relative overflow-hidden">
+    <section id="how-it-works" className="w-full bg-[#f3eeff] py-8 md:py-12 relative overflow-hidden">
       {/* DESKTOP DECORATIVE CURVE (Lg and above) */}
       <div className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-full pointer-events-none">
         <img
@@ -47,10 +47,10 @@ export default function HowItWorks() {
         <div className="absolute top-[200px] left-[47%] -translate-x-1/2 -translate-y-1/2 z-20">
           <StepCircle number="1" />
         </div>
-        <div className="absolute top-[385px] left-[55%] -translate-x-1/2 -translate-y-1/2 z-20">
+        <div className="absolute top-[385px] left-[54%] -translate-x-1/2 -translate-y-1/2 z-20">
           <StepCircle number="2" />
         </div>
-        <div className="absolute top-[610px] left-[55%] -translate-x-1/2 -translate-y-1/2 z-20">
+        <div className="absolute top-[610px] left-[53%] -translate-x-1/2 -translate-y-1/2 z-20">
           <StepCircle number="3" />
         </div>
       </div>
@@ -60,7 +60,7 @@ export default function HowItWorks() {
           {/* LEFT: Branding & Illustration */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
             <div className="mb-10 lg:mb-16">
-              <span className="px-4 py-1.5 font-bold uppercase  text-[14px] ">
+              <span className="px-4 py-1.5 font-bold flex justify-center uppercase  text-[14px] ">
                 How It Works
               </span>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#1a0533] tracking-tight">
@@ -105,7 +105,7 @@ export default function HowItWorks() {
 
                     {/* Content Wrapper */}
                     <div className="pt-2">
-                      <h3 className="text-xl sm:text-2xl font-black text-[#1a0533] mb-2 group-hover:text-purple-700 transition-colors">
+                      <h3 className="text-xl sm:text-2xl font-black text-[#1a0533] mb-2  transition-colors">
                         {step.title}
                       </h3>
                       <p className="text-gray-500 text-sm sm:text-base leading-relaxed font-medium max-w-lg">
@@ -119,8 +119,8 @@ export default function HowItWorks() {
 
             {/* DESKTOP LAYOUT (>= LG) */}
             <div className="hidden lg:block relative h-[750px] w-full">
-              <div className="absolute top-[150px] left-0 -translate-y-1/2 max-w-[580px] p-6 hover:bg-white/40 rounded-3xl transition-all duration-300 border border-transparent hover:border-purple-100 hover:shadow-2xl hover:shadow-purple-200/50 group">
-                <h3 className="text-3xl font-black text-[#1a0533] mb-3 group-hover:text-purple-700 transition-colors">
+              <div className="absolute top-[150px] left-0 -translate-y-1/2 max-w-[600px] p-6 rounded-3xl transition-all duration-300 border border-transparent hover:border-purple-100 hover:shadow-2xl hover:shadow-purple-200/50 group">
+                <h3 className="text-3xl font-black text-purple-700 mb-3 group-hover:text-purple-700 transition-colors">
                   {steps[0].title}
                 </h3>
                 <p className="text-gray-600 font-medium leading-relaxed">
@@ -128,8 +128,8 @@ export default function HowItWorks() {
                 </p>
               </div>
 
-              <div className="absolute top-[335px] left-[10%] -translate-y-1/2 max-w-[580px] p-6 hover:bg-white/40 rounded-3xl transition-all duration-300 border border-transparent hover:border-purple-100 hover:shadow-2xl hover:shadow-purple-200/50 group">
-                <h3 className="text-3xl font-black text-[#1a0533] mb-3 group-hover:text-purple-700 transition-colors">
+              <div className="absolute top-[335px] left-[10%] -translate-y-1/2 max-w-[600px] p-6 rounded-3xl transition-all duration-300 border border-transparent hover:border-purple-100 hover:shadow-2xl hover:shadow-purple-200/50 group">
+                <h3 className="text-3xl font-black text-purple-700 mb-3  transition-colors">
                   {steps[1].title}
                 </h3>
                 <p className="text-gray-600 font-medium leading-relaxed">
@@ -137,8 +137,8 @@ export default function HowItWorks() {
                 </p>
               </div>
 
-              <div className="absolute top-[560px] left-[12%] -translate-y-1/2 max-w-[580px] p-6 hover:bg-white/40 rounded-3xl transition-all duration-300 border border-transparent hover:border-purple-100 hover:shadow-2xl hover:shadow-purple-200/50 group">
-                <h3 className="text-3xl font-black text-[#1a0533] mb-3 group-hover:text-purple-700 transition-colors">
+              <div className="absolute top-[560px] left-[12%] -translate-y-1/2 max-w-[600px] p-6 rounded-3xl transition-all duration-300 border border-transparent hover:border-purple-100 hover:shadow-2xl hover:shadow-purple-200/50 group">
+                <h3 className="text-3xl font-black text-purple-700 mb-3  transition-colors">
                   {steps[2].title}
                 </h3>
                 <p className="text-gray-600 font-medium leading-relaxed">

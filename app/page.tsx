@@ -1,9 +1,10 @@
-import Navbar from './components/Header';
-import Hero from './components/Hero';
-import HowItWorks from './components/HowItWorks';
-import Features from './components/Features';
-import Pricing from './components/Pricing';
-import Footer from './components/Footer';
+import Navbar from "./components/Header";
+import Hero from "./components/Hero";
+import HowItWorks from "./components/HowItWorks";
+import Features from "./components/Features";
+import Pricing from "./components/Pricing";
+import Footer from "./components/Footer";
+import StatsSection from "./components/StatsSection";
 
 export default function Home() {
   return (
@@ -11,8 +12,9 @@ export default function Home() {
       <Navbar />
       <div className="relative">
         <Hero />
-        <HowItWorks />
+        <StatsSection />
         <Features />
+        <HowItWorks />
         {/* Additional sections would go here */}
         <Pricing />
         <Footer />
