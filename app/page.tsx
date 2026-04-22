@@ -15,7 +15,6 @@ export default function Home() {
         <StatsSection />
         <Features />
         <HowItWorks />
-        {/* Additional sections would go here */}
         <Pricing />
         <Footer />
       </div>

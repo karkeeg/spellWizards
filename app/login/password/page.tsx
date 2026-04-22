@@ -46,12 +46,14 @@ function AuthForm() {
           <label className="text-sm font-semibold text-gray-700">Email</label>
           <div className="relative">
             <input
+              suppressHydrationWarning
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-12 px-4 pr-16 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 outline-none focus:border-purple-600 transition-colors"
             />
             <button
+              suppressHydrationWarning
               onClick={() => (window.location.href = "/login")}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#7C3AED] hover:text-[#6D28D9]"
             >
@@ -67,6 +69,7 @@ function AuthForm() {
           </label>
           <div className="relative">
             <input
+              suppressHydrationWarning
               type={showPassword ? "text" : "password"}
               placeholder="Enter password"
               value={password}
@@ -74,6 +77,7 @@ function AuthForm() {
               className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:border-purple-600 outline-none transition-colors text-sm"
             />
             <button
+              suppressHydrationWarning
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
@@ -91,6 +95,7 @@ function AuthForm() {
 
         {/* Submit */}
         <button
+          suppressHydrationWarning
           onClick={handleContinue}
           disabled={isPending || !password}
           className={`w-full h-12 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
@@ -110,6 +115,7 @@ function AuthForm() {
         </button>
 
         <button
+          suppressHydrationWarning
           onClick={() => (window.location.href = "/login")}
           className="text-sm font-semibold text-gray-900 hover:opacity-70 transition-opacity"
         >

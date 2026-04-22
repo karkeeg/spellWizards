@@ -31,7 +31,10 @@ export default function LoginPage() {
         </p>
 
         <div className="w-[80%] space-y-3 mb-4">
-          <button className="w-full h-10 flex items-center justify-center gap-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors bg-white shadow-sm">
+          <button 
+            suppressHydrationWarning
+            className="w-full h-10 flex items-center justify-center gap-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors bg-white shadow-sm"
+          >
             <Image
               src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
               alt="Google"
@@ -40,7 +43,10 @@ export default function LoginPage() {
             />
             <span className="font-semibold text-sm">Continue with Google</span>
           </button>
-          <button className="w-full h-10 flex items-center justify-center gap-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors bg-white shadow-sm">
+          <button 
+            suppressHydrationWarning
+            className="w-full h-10 flex items-center justify-center gap-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors bg-white shadow-sm"
+          >
             <Image
               src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
               alt="Microsoft"
@@ -51,7 +57,10 @@ export default function LoginPage() {
               Continue with Microsoft
             </span>
           </button>
-          <button className="w-full h-10 flex items-center justify-center gap-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors bg-white shadow-sm">
+          <button 
+            suppressHydrationWarning
+            className="w-full h-10 flex items-center justify-center gap-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors bg-white shadow-sm"
+          >
             <Image
               src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
               alt="Apple"
@@ -70,6 +79,7 @@ export default function LoginPage() {
 
         <div className="w-[80%] space-y-4">
           <input
+            suppressHydrationWarning
             type="email"
             placeholder="example@gmail.com"
             value={email}
@@ -77,6 +87,7 @@ export default function LoginPage() {
             className="w-full h-10 px-4 border-2 border-purple-100 rounded-xl focus:border-purple-600 outline-none transition-colors text-sm"
           />
           <button
+            suppressHydrationWarning
             onClick={handleContinue}
             disabled={isLoading || !email.includes("@")}
             className={`w-full h-10 rounded-xl font-semibold transition-all gap-2 ${
