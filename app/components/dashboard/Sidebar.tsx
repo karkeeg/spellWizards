@@ -5,27 +5,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  BarChart3,
-  Users,
-  FileText,
-  UserPlus,
-  Settings,
-  ChevronRight,
   LogOut,
   X,
 } from "lucide-react";
-
+import progress from "@/public/icons/progress.svg"
+import home from "@/public/icons/Home.svg"
+import users from "@/public/icons/child.svg"
+import customWords from "@/public/icons/custom words.svg"
+import addUser from "@/public/icons/add.svg"
+import settings from "@/public/icons/settings.svg"
 import { useParentProfile } from "@/hooks/use-parent-profile";
 import { useAuth } from "@/contexts/auth-context";
 
 const navItems = [
-  { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Progress", href: "/dashboard/progress", icon: BarChart3 },
-  { name: "My children", href: "/dashboard/children", icon: Users },
-  { name: "Custom Words", href: "/dashboard/words", icon: FileText },
-  { name: "Add Child", href: "/dashboard/add-child", icon: UserPlus },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Overview", href: "/dashboard", icon: home },
+  { name: "Progress", href: "/dashboard/progress", icon: progress },
+  { name: "My children", href: "/dashboard/children", icon: users },
+  { name: "Custom Words", href: "/dashboard/words", icon: customWords },
+  { name: "Add Child", href: "/dashboard/add-child", icon: addUser },
+  { name: "Settings", href: "/dashboard/settings", icon: settings },
 ];
 
 interface SidebarProps {
@@ -50,9 +48,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <aside
-      className={`w-64 h-screen bg-white border-r border-dashboard-border flex flex-col fixed left-0 top-0 z-40 transition-transform duration-300 md:translate-x-0 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+      className={`w-64 h-screen bg-white border-r border-dashboard-border flex flex-col fixed left-0 top-0 z-40 transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
     >
       {/* Logo Section */}
       <div className="p-6 pb-4 flex flex-col gap-4 relative">
@@ -80,26 +77,36 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto hide-scrollbar">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
-          const Icon = item.icon;
 
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 group ${
-                isActive
-                  ? "bg-[#F3E8FF] text-dashboard-purple shadow-md shadow-purple-100/30"
-                  : "text-dashboard-text-muted hover:bg-gray-50 hover:text-dashboard-purple"
-              }`}
+              className={`flex items-center justify-between px-4 py-2 rounded-2xl transition-all duration-300 group ${isActive
+                ? "bg-[#F3E8FF]/60 text-dashboard-purple shadow-sm border-l-[6px] border-l-dashboard-purple shadow-purple-100/30"
+                : "text-dashboard-text-muted hover:bg-gray-50 hover:text-dashboard-purple"
+                }`}
             >
               <div className="flex items-center gap-3">
-                <Icon
-                  size={20}
-                  className={`${isActive ? "text-dashboard-purple" : "text-gray-400 group-hover:text-dashboard-purple"}`}
-                />
-                <span className="text-md font-medium">{item.name}</span>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300">
+                  <Image
+                    src={item.icon}
+                    alt={item.name}
+                    width={22}
+                    height={22}
+                    className={`transition-all duration-300 ${
+                      isActive
+                        ? "grayscale-0 opacity-100 [filter:invert(13%)_sepia(95%)_saturate(2000%)_hue-rotate(263deg)_brightness(75%)]"
+                        : "grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 group-hover:[filter:invert(13%)_sepia(95%)_saturate(2000%)_hue-rotate(263deg)_brightness(75%)]"
+                    }`}
+                  />
+                </div>
+                <span className={`text-[15px] font-semibold transition-colors duration-300 ${isActive ? "text-dashboard-purple" : "group-hover:translate-x-0.5"
+                  }`}>
+                  {item.name}
+                </span>
               </div>
-              {isActive && <ChevronRight size={14} />}
+
             </Link>
           );
         })}

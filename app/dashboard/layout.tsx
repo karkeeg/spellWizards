@@ -32,14 +32,14 @@ export default function DashboardLayout({
     <AuthGuard>
       <div className="min-h-screen bg-dashboard-bg flex relative">
         {/* Sidebar */}
-        <Sidebar 
-          isOpen={isSidebarOpen} 
-          onClose={() => setIsSidebarOpen(false)} 
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
         />
 
         {/* Mobile Overlay */}
         {isSidebarOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden transition-opacity duration-300"
             onClick={() => setIsSidebarOpen(false)}
           />
@@ -48,15 +48,15 @@ export default function DashboardLayout({
         {/* Main Content Area */}
         <div className={`flex-1 flex flex-col min-h-screen relative transition-all duration-300 ${isSidebarOpen ? "md:ml-64" : "ml-0 md:ml-64"}`}>
           {/* Topbar */}
-          <Topbar 
-            title={getTitle(pathname)} 
+          <Topbar
+            title={getTitle(pathname)}
             onOpenNotifications={() => setIsNotificationsOpen(true)}
             onOpenAskWiz={() => setIsAskWizOpen(true)}
             onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           />
 
           {/* Page Content */}
-          <main className="mt-16 p-4 md:p-6 flex-1 overflow-x-hidden hide-scrollbar">
+          <main className="mt-16 bg-[#7C3AED]/10 p-3 md:p-4 flex-1 overflow-x-hidden hide-scrollbar">
             <div className="max-w-7xl mx-auto animate-fade-in">
               {children}
             </div>
@@ -64,13 +64,13 @@ export default function DashboardLayout({
         </div>
 
         {/* Drawers */}
-        <NotificationDrawer 
-          isOpen={isNotificationsOpen} 
-          onClose={() => setIsNotificationsOpen(false)} 
+        <NotificationDrawer
+          isOpen={isNotificationsOpen}
+          onClose={() => setIsNotificationsOpen(false)}
         />
-        <AskWizDrawer 
-          isOpen={isAskWizOpen} 
-          onClose={() => setIsAskWizOpen(false)} 
+        <AskWizDrawer
+          isOpen={isAskWizOpen}
+          onClose={() => setIsAskWizOpen(false)}
         />
       </div>
     </AuthGuard>

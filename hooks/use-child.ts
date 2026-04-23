@@ -10,7 +10,22 @@ import {
   BatchCreateChildrenRequest,
   ChildProfileResponse,
   CustomWordResponse,
+  getChildStats,
+  ChildStatsResponse,
+  updateChild,
+  UpdateChildRequest,
 } from "@/services/child.service";
+
+export function useUpdateChild() {
+  const queryClient = useQueryClient();
+  return useMutation<ChildProfileResponse, Error, { childId: string; data: UpdateChildRequest }>({
+    mutationFn: ({ childId, data }) => updateChild(childId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["children"] });
+      queryClient.invalidateQueries({ queryKey: ["child", variables.childId] });
+    },
+  });
+}
 
 export function useCreateChildren() {
   return useMutation<ChildProfileResponse[], Error, BatchCreateChildrenRequest>({
@@ -49,5 +64,13 @@ export function useAddCustomWord() {
       // Invalidate the words list for this child so it refetches
       queryClient.invalidateQueries({ queryKey: ["custom-words", variables.childId] });
     },
+  });
+}
+
+export function useChildStats(childId: string | null) {
+  return useQuery<ChildStatsResponse, Error>({
+    queryKey: ["child-stats", childId],
+    queryFn: () => getChildStats(childId!),
+    enabled: !!childId,
   });
 }

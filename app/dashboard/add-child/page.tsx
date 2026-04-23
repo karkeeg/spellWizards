@@ -1,21 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, Lock, User } from "lucide-react";
 import { useCreateChildren } from "@/hooks/use-child";
+import { useAvatars } from "@/hooks/use-avatar";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import toast from "react-hot-toast";
 
-const AVATAR_COLORS = [
-  "#F97316", // orange
-  "#8B5CF6", // purple
-  "#06B6D4", // cyan
-  "#10B981", // green
-  "#F59E0B", // amber
-  "#EF4444", // red
-  "#3B82F6", // blue
-  "#EC4899", // pink
-];
+
 
 const GRADE_OPTIONS = [
   "Pre-K",
@@ -35,8 +28,15 @@ const SPELLING_LEVELS = ["Beginner", "Intermediate", "Advanced"];
 export default function AddChildPage() {
   const router = useRouter();
   const { mutate: createChildren, isPending } = useCreateChildren();
+  const { data: avatars, isLoading: isLoadingAvatars } = useAvatars();
+  const [selectedAvatarUrl, setSelectedAvatarUrl] = useState<string>("");
 
-  const [selectedColor, setSelectedColor] = useState(AVATAR_COLORS[0]);
+  useEffect(() => {
+    if (avatars && avatars.length > 0 && !selectedAvatarUrl) {
+      setSelectedAvatarUrl(avatars[0].image_url);
+    }
+  }, [avatars, selectedAvatarUrl]);
+
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [grade, setGrade] = useState("");
@@ -63,7 +63,7 @@ export default function AddChildPage() {
             current_spelling_level: spellingLevel,
             interests: [],
             password,
-            avatar_url: selectedColor,
+            avatar_url: selectedAvatarUrl,
           },
         ],
       },
@@ -94,45 +94,28 @@ export default function AddChildPage() {
             <label className="text-sm font-semibold text-[#14062B] block mb-3">
               Choose Avatar
             </label>
-            <div className="flex gap-3 flex-wrap">
-              {AVATAR_COLORS.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-white transition-all duration-200 ${
-                    selectedColor === color
-                      ? "ring-2 ring-offset-2 ring-dashboard-purple scale-110 shadow-lg"
-                      : "opacity-40 hover:opacity-70"
-                  }`}
-                  style={{ backgroundColor: color }}
-                >
-                  <User size={20} />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Avatar Color */}
-          <div>
-            <label className="text-sm font-semibold text-[#14062B] block mb-3">
-              Avatar Color
-            </label>
-            <div className="flex gap-3 flex-wrap">
-              {AVATAR_COLORS.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-8 h-8 rounded-full transition-all duration-200 ${
-                    selectedColor === color
-                      ? "ring-2 ring-offset-2 ring-dashboard-purple scale-125"
-                      : "hover:scale-110"
-                  }`}
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-            </div>
+            {isLoadingAvatars ? (
+              <div className="flex gap-3">
+                {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-12 h-12 rounded-full bg-gray-200 animate-pulse" />)}
+              </div>
+            ) : (
+              <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+                {avatars?.map((avatar) => (
+                  <button
+                    key={avatar.id}
+                    type="button"
+                    onClick={() => setSelectedAvatarUrl(avatar.image_url)}
+                    className={`relative shrink-0 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200 ${
+                      selectedAvatarUrl === avatar.image_url
+                        ? "ring-4 ring-offset-2 ring-dashboard-purple scale-110 shadow-lg"
+                        : "opacity-60 hover:opacity-100 hover:scale-105 hover:ring-2 hover:ring-purple-200"
+                    }`}
+                  >
+                    <Image src={avatar.image_url} alt={avatar.name} fill className="object-cover rounded-full bg-purple-50" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Name + Age */}
@@ -288,15 +271,18 @@ export default function AddChildPage() {
             Preview
           </p>
           <div
-            className="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-white shadow-lg mb-5 transition-all duration-300 relative"
-            style={{ backgroundColor: selectedColor }}
+            className="w-24 h-24 mx-auto rounded-full flex items-center justify-center shadow-lg mb-5 transition-all duration-300 relative overflow-hidden bg-purple-100"
           >
-            {name ? (
-              <span className="text-3xl font-bold">
-                {name.charAt(0).toUpperCase()}
-              </span>
+            {selectedAvatarUrl ? (
+              <Image src={selectedAvatarUrl} alt="Preview Avatar" fill className="object-cover" />
+            ) : name ? (
+              <div className="w-full h-full bg-[#FFB820] flex items-center justify-center text-white">
+                <span className="text-4xl font-bold font-syne">
+                  {name.charAt(0).toUpperCase()}
+                </span>
+              </div>
             ) : (
-              <User size={40} />
+              <User size={40} className="text-purple-300" />
             )}
           </div>
           <h4 className="text-xl font-bold text-[#14062B] font-syne">
@@ -332,22 +318,31 @@ export default function AddChildPage() {
           </ul>
         </div>
 
-        {/* Safe & Private */}
-        <div className="bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-          <div className="relative z-10">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-              <Lock size={22} />
-            </div>
-            <h4 className="text-base font-bold font-syne mb-2">
-              Safe &amp; Private
-            </h4>
-            <p className="text-xs text-purple-100 leading-relaxed">
-              No email or phone number needed for the child&apos;s account.
-              Everything is managed through your parent portal.
-            </p>
-          </div>
-        </div>
+       {/* Safe & Private */}
+<div className="bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
+  <div className="absolute -bottom-25 -right-5 w-60 h-60">
+    <Image
+      src="/intro-wizzard.svg"
+      alt="Safe & Private"
+      width={220}
+      height={220}
+      className="object-contain object-right-bottom"
+    />
+  </div>
+
+  <div className="relative z-10">
+    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+      <Lock size={22} />
+    </div>
+    <h4 className="text-base font-bold font-syne mb-2">
+      Safe &amp; Private
+    </h4>
+    <p className="text-xs text-purple-100 leading-relaxed">
+      No email or phone number needed for the child&apos;s account.
+      Everything is managed through your parent portal.
+    </p>
+  </div>
+</div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AlertTriangle, CheckCircle } from "lucide-react";
-import { AsteriskCircleIcon, ClockIcon } from "../icons";
+import { AsteriskCircleIcon, ClockIcon, TargetIcon } from "../icons";
 
 interface LearnerCardProps {
   name: string;
@@ -61,14 +61,14 @@ export default function LearnerCard({
 
 
           <div className="flex flex-col items-center gap-1">
-            <CheckCircle size={28} className="text-green-600" />
-            <span className="text-sm font-bold text-green-600">{accuracy}%</span>
+            <TargetIcon size={28} color="#F97316" />
+             <span className="text-sm font-bold text-gray-600">{accuracy}%</span>
             <span className="text-[10px] text-gray-400 font-medium leading-tight text-center">Accuracy</span>
           </div>
 
           <div className="flex flex-col items-center gap-1">
             <ClockIcon size={28} color="#00B3DE" />
-            <span className="text-sm font-bold text-blue-600">{weeklyPractice}</span>
+            <span className="text-sm font-bold text-blue-600">{weeklyPractice} h</span>
             <span className="text-[10px] text-gray-400 font-medium leading-tight text-center">Weekly<br />Practice</span>
           </div>
         </div>

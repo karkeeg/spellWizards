@@ -2,7 +2,11 @@ import axiosInstance from "@/lib/axios";
 
 // Types
 export interface UpdateParentRequest {
-  parent_name: string;
+  parent_name?: string;
+  phone_number?: string;
+  gender?: string;
+  current_password?: string;
+  new_password?: string;
 }
 
 export interface ParentProfile {

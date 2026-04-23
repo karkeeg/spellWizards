@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Plus, Flame, Zap, Star, MoreVertical } from "lucide-react";
+import { Plus, Flame, Zap, Star, MoreVertical, Trash2 } from "lucide-react";
 import { useChildren } from "@/hooks/use-child";
 
 export default function MyChildrenPage() {
@@ -14,13 +14,22 @@ export default function MyChildrenPage() {
           <h2 className="text-xl font-bold text-[#14062B] font-syne">My Children</h2>
           <p className="text-xs text-dashboard-text-muted mt-1 font-medium">{children?.length || 0} linked profiles</p>
         </div>
-        <Link
-          href="/dashboard/add-child"
-          className="flex items-center gap-2 bg-dashboard-purple text-white px-5 py-2.5 rounded-xl hover:bg-[#6D28D9] transition-all font-bold shadow-md shadow-purple-200 text-sm"
-        >
-          <Plus size={18} />
-          <span>Add Child</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/add-child"
+            className="flex items-center gap-2 bg-dashboard-purple text-white px-5 py-2.5 rounded-xl hover:bg-[#6D28D9] transition-all font-bold shadow-md shadow-purple-200 text-sm"
+          >
+            <Plus size={18} />
+            <span>Add Child</span>
+          </Link>
+          <Link
+            href="/dashboard/delete-child"
+            className="flex items-center gap-2 text-red-500 px-5 py-2.5 rounded-xl border-2 border-red-500 text-sm"
+          >
+            <Trash2 size={18} />
+            <span>Delete Child Profile</span>
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-5">

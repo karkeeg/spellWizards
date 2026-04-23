@@ -19,21 +19,27 @@ export default function StatCard({
   color,
 }: StatCardProps) {
   return (
-    <div className="bg-white p-5 md:p-6 rounded-2xl border border-[#E5E7EB] shadow-sm hover:shadow-md transition-shadow duration-200 group">
-      <div className="flex flex-col items-start gap-3">
-        <div
-          className={`w-12 h-12  flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
-        >
-          <Icon size={60} className={color} />
+    <div className="bg-white px-6 py-5 rounded-2xl border border-purple-100/50 shadow-sm hover:shadow-md transition-all duration-300 group">
+      <div className="flex items-center gap-4 md:gap-6">
+        {/* Icon Container */}
+        <div className="flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
+          <Icon size={44} className={color} />
         </div>
-        <div>
-          <h3 className={`text-2xl md:text-3xl font-bold ${color}`}>{value}</h3>
-          <p className="text-sm font-bold text-[#14062B] mt-1">
+        
+        {/* Value */}
+        <div className={`text-4xl font-black ${color} tracking-tight`}>
+          {value}
+        </div>
+
+        {/* Text Details */}
+        <div className="flex items-center gap-2 overflow-hidden">
+          <span className="text-[16px] font-bold text-[#6D49A6] whitespace-nowrap">
             {title}
-          </p>
-          <p className="text-xs text-gray-400 mt-0.5">
+          </span>
+          <div className="h-4 w-[1px] bg-purple-200/60 mx-1 flex-shrink-0" />
+          <span className="text-[15px] text-[#8E78B3] font-medium whitespace-nowrap">
             {label}
-          </p>
+          </span>
         </div>
       </div>
     </div>

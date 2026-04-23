@@ -42,11 +42,30 @@ export interface ChildProfileResponse {
   grade_band?: string | null;
 }
 
+export interface UpdateChildRequest {
+  name?: string;
+  email?: string; // mapping to username in UI
+  password?: string;
+  current_spelling_level?: string;
+  avatar_url?: string;
+}
+
 export const createChildren = async (
   data: BatchCreateChildrenRequest,
 ): Promise<ChildProfileResponse[]> => {
   const response = await axiosInstance.post<ChildProfileResponse[]>(
     "/parent/me/children",
+    data,
+  );
+  return response.data;
+};
+
+export const updateChild = async (
+  childId: string,
+  data: UpdateChildRequest,
+): Promise<ChildProfileResponse> => {
+  const response = await axiosInstance.patch<ChildProfileResponse>(
+    `/parent/me/children/${childId}`,
     data,
   );
   return response.data;
@@ -103,3 +122,24 @@ export const addCustomWord = async (
   );
   return response.data;
 };
+
+export interface WeeklyActivity {
+  day: string;
+  xp: number;
+}
+
+export interface ChildStatsResponse {
+  total_xp_earned: number;
+  total_quests_completed: number;
+  weekly_activity: WeeklyActivity[];
+}
+
+export const getChildStats = async (
+  childId: string,
+): Promise<ChildStatsResponse> => {
+  const response = await axiosInstance.get<ChildStatsResponse>(
+    `/parent/child/${childId}/stats`,
+  );
+  return response.data;
+};
+

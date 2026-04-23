@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import Image from "next/image";
-import { BookOpen, Brain, Sparkles, Star, BarChart3, CheckCircle2, FileText, PieChart, Users } from "lucide-react";
+import { BookOpen, Brain, Sparkles, Star, BarChart3, CheckCircle2, FileText, PieChart, Users, BookA } from "lucide-react";
 import BgBlur from "./BgBlur";
 
 
@@ -132,7 +132,7 @@ const AboutUs: FC = () => {
             <div className="space-y-3 sm:space-y-4">
               {[
                 {
-                  icon: <BookOpen className="w-5 h-5" />,
+                  icon: <BookA  className="w-6 h-6 " />,
                   title: "Consistent Practice",
                   desc: "Regular, structured repetition that builds lasting knowledge rather than cramming.",
                 },
@@ -142,7 +142,7 @@ const AboutUs: FC = () => {
                   desc: "Going beyond rote learning to develop genuine comprehension and application.",
                 },
                 {
-                  icon: <Sparkles className="w-5 h-5" />,
+                  icon: <Star fill="purple" className="w-5 h-5" />,
                   title: "Gradual Mastery",
                   desc: "Progressive skill development that feels natural and builds confidence over time.",
                 },
@@ -173,6 +173,15 @@ const AboutUs: FC = () => {
           <div className="max-w-[1300px] mx-auto">
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 items-center">
               {/* Left Block */}
+
+              <div className="absolute top-5 -left-10 w-32 h-32 opacity-100 pointer-events-none">
+                <svg width="99" height="143" viewBox="0 0 99 143" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.8789 -2.57028e-06L47.3736 54.3125L98.7165 59.5458L53.8597 87.8795L64.3544 142.192L26.1366 105.391L-18.7202 133.724L2.51675 82.6462L-35.701 45.8449L15.6419 51.0782L36.8789 -2.57028e-06Z" fill="#7C3AED" fill-opacity="0.12"/>
+</svg>
+
+
+
+              </div>
               <div className="xl:col-span-7">
                 <span className="inline-block bg-[#F3E8FF] text-[#7C3AED] text-[11px] sm:text-[12px] md:text-[13px] font-bold px-4 py-1.5 rounded-full mb-4 sm:mb-6">
                   Parents First Design
@@ -201,51 +210,68 @@ const AboutUs: FC = () => {
               </div>
 
               {/* Right Block */}
-              <div className="xl:col-span-5 space-y-8 sm:space-y-12">
-                {/* Premium AI Card */}
-                <div className="relative rounded-[24px] sm:rounded-[32px] bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] p-6 sm:p-8 md:p-10 text-white overflow-hidden shadow-2xl shadow-purple-500/20">
-                  <div className="absolute right-[20%] bottom-[10%] w-108 h-108 opacity-50 pointer-events-none">
-                    <Image src="/AboutUsImage.svg" alt="wizard" fill className="object-contain object-right-bottom" />
-                  </div>
-                  <h4 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold font-syne mb-3 sm:mb-4 z-10 text-center">AI-Powered Insights</h4>
-                  <p className="text-white/80 text-[13px] sm:text-[14px] md:text-[15px] text-center leading-relaxed relative z-10">
-                    Surface improvement areas, interpret learning patterns, and receive simple, actionable recommendations — all in one place, designed for parents, not data scientists.
-                  </p>
-                </div>
+<div className="xl:col-span-5  relative">
 
-                {/* Coming Soon Teaser */}
-                <div className="text-center">
-                  <span className="inline-block bg-[#F3E8FF] text-[#7C3AED] text-[12px] font-bold px-4 py-1 rounded-full mb-4 sm:mb-6">
-                    Coming Soon
-                  </span>
-                  <h3 className="text-[24px] sm:text-[28px] md:text-[36px] font-bold text-[#1A0533] font-syne mb-3 sm:mb-4 leading-tight">
-                    An <span className="text-[#7C3AED]">Intelligent Assistant</span> Layer
-                  </h3>
-                  <p className="text-gray-500 text-[13px] sm:text-[14px] md:text-[15px] leading-relaxed max-w-md mx-auto">
-                    Beyond dashboards, we are building an intelligent assistant layer — an AI-powered guide that helps parents interpret progress and recommend next steps.
-                  </p>
-                </div>
-              </div>
+  {/* Decorative Star */}
+  <div className="absolute -top-6 right-10 w-20 h-20 opacity-70 pointer-events-none">
+    <svg viewBox="0 0 94 95" fill="none">
+      <path
+        d="M66.1411 0L61.0457 35.968L93.6787 51.9287L57.8965 58.1974L52.8011 94.1654L35.7819 62.0717L0 68.3403L25.2635 42.2366L8.24432 10.1429L40.8773 26.1037L66.1411 0Z"
+        fill="#7C3AED"
+        fillOpacity="0.12"
+      />
+    </svg>
+  </div>
+
+  {/* Premium Card */}
+  <div className="relative overflow-hidden">
+    {/* Image */}
+    <div className="relative h-[300px] sm:h-[360px] ">
+      <Image
+        src="/secure.svg"
+        alt="AI Assistant"
+        fill
+        className="object-contain drop-shadow-xl"
+      />
+    </div>
+  </div>
+
+  {/* Text Content */}
+  <div className="text-center px-2">
+    <span className="inline-block bg-[#F3E8FF] text-[#7C3AED] text-[12px] font-bold px-4 py-1 rounded-full mb-2">
+      Coming Soon
+    </span>
+
+    <h3 className="text-[26px] sm:text-[32px] md:text-[34px] font-bold text-[#1A0533] font-syne leading-tight">
+      An <span className="text-[#7C3AED]">Intelligent Assistant</span> Layer
+    </h3>
+
+    <p className="text-gray-500 text-[14px] md:text-[15px] leading-relaxed max-w-md mx-auto">
+      Beyond dashboards, we are building an intelligent assistant layer — an AI-powered guide that helps parents interpret progress, understand insights, and recommend next steps in real time.
+    </p>
+  </div>
+
+</div>
             </div>
           </div>
         </div>
 
         {/* Thoughtful Design Section */}
-        <div className="relative py-6 md:py-10 bg-white">
+        <div className="relative py-2 md:py-8 bg-white">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-12 text-center">
             <span className="inline-block bg-[#F3E8FF] text-[#7C3AED] text-[11px] sm:text-[12px] md:text-[13px] font-bold px-4 py-1.5 rounded-full mb-4 sm:mb-6">
               What we bring together
             </span>
-            <h2 className="text-[26px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#1A0533] font-syne leading-[1.1] mb-4 sm:mb-6 max-w-4xl mx-auto tracking-tight">
+            <h2 className="text-[26px] sm:text-[32px] md:text-[36px] lg:text-[44px] font-bold text-[#1A0533] font-syne leading-[1.1] mb-4 sm:mb-6 max-w-5xl mx-auto tracking-tight">
               Where Learning Meets <span className="text-[#7C3AED]">Thoughtful Design</span>
             </h2>
-            <p className="mt-4 sm:mt-6 text-[13px] sm:text-[14px] md:text-[16px] text-gray-500 max-w-2xl mx-auto leading-relaxed mb-6 md:mb-10">
+            <p className="mt-4 sm:mt-6 text-[13px] sm:text-[14px] md:text-[16px] text-gray-500 max-w-2xl mx-auto leading-relaxed mb-4 md:mb-6">
               The focus is not just on making learning engaging, but on making it effective, consistent, and transparent.
             </p>
 
-            <div className="max-w-3xl mx-auto mb-10">
+            <div className="max-w-2xl mx-auto mb-10">
               <div className="bg-white rounded-[24px] sm:rounded-[32px] md:rounded-[48px] shadow-[0_30px_70px_rgba(0,0,0,0.08)] border border-gray-50 p-3 sm:p-4 md:p-6">
-                <div className="relative w-full aspect-[3/2] overflow-hidden rounded-[18px] sm:rounded-[24px]">
+                <div className="relative w-full aspect-[2/1] overflow-hidden rounded-[18px] sm:rounded-[24px]">
                   <Image
                     src="/features/GameBased.svg"
                     alt="Game-Based Engagement"

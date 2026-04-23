@@ -73,7 +73,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── Stats Grid ──────────────────────────────────────────── */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in [animation-delay:0.3s]">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in [animation-delay:0.3s]">
         <StatCard
           title="Active Students"
           value={totalStudents.toString()}
@@ -88,17 +88,10 @@ export default function DashboardPage() {
           value="91%"
           label="This week"
           icon={TargetIcon}
-          color="text-green-600"
-          bgColor="bg-green-100"
+          color="text-orange-500"
+          bgColor="bg-orange-50"
         />
-        <StatCard
-          title="Weekly Practice"
-          value={`${bestStreak > 0 ? bestStreak : 4}/7 days`}
-          label={bestStreakChild}
-          icon={ClockIcon}
-          color="text-purple-600"
-          bgColor="bg-purple-100"
-        />
+
       </section>
 
       {/* ── Your Learners ───────────────────────────────────────── */}

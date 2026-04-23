@@ -9,7 +9,7 @@ import {
   Tag,
   Gift,
   CreditCard,
-  RefreshCw,
+  Zap,
   XCircle,
   RotateCcw,
   Mail,
@@ -19,6 +19,9 @@ import {
   Smartphone,
   Globe,
   Shield,
+  CircleDollarSign,
+  BadgeCheck,
+  Landmark,
 } from "lucide-react";
 
 export default function PrivacyPolicy() {
@@ -145,8 +148,8 @@ export default function PrivacyPolicy() {
           {/* ── Definition ── */}
           <div id="definition" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <BookOpen className="w-4 h-4" />
+              <div className="w-8 h-8  flex items-center justify-center text-[#7C3AED]">
+                <Info className="w-6 h-6" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Definition</h2>
             </div>
@@ -182,7 +185,7 @@ export default function PrivacyPolicy() {
           <div id="price" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <Tag className="w-4 h-4" />
+                <CircleDollarSign className="w-6 h-6" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Price</h2>
             </div>
@@ -197,7 +200,7 @@ export default function PrivacyPolicy() {
                 </p>
               </div>
               <div className="flex items-start gap-3 p-4 bg-[#F0FFF4] border border-[#C6F6D5] rounded-2xl">
-                <CheckCircle2 className="w-4 h-4 text-[#27AE60] shrink-0 mt-0.5" />
+                <BadgeCheck className="w-4 h-4 text-[#27AE60] shrink-0 mt-0.5" />
                 <p className="text-[13px] text-[#1E8449] leading-relaxed">
                   Subscription plans, features, and prices are liable to change at any time. We will keep you informed of changes via our Site and, if appropriate, via e-mail.
                 </p>
@@ -236,7 +239,7 @@ export default function PrivacyPolicy() {
           <div id="payments" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <CreditCard className="w-4 h-4" />
+                <Landmark className="w-4 h-4" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Payment</h2>
             </div>
@@ -278,7 +281,7 @@ export default function PrivacyPolicy() {
           <div id="subscriptions" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <RefreshCw className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Subscriptions</h2>
             </div>
@@ -302,7 +305,7 @@ export default function PrivacyPolicy() {
 
             <div className="pl-4 md:pl-11">
               <div className="flex items-start gap-3 p-4 bg-[#F0FFF4] border border-[#C6F6D5] rounded-2xl">
-                <CheckCircle2 className="w-4 h-4 text-[#27AE60] shrink-0 mt-0.5" />
+                <BadgeCheck className="w-6 h-6 text-[#27AE60] shrink-0 mt-0.5" />
                 <p className="text-[13px] text-[#1E8449] leading-relaxed">
                   <strong>Free Trial:</strong> If a free trial is offered, users will not be charged until the trial period ends. You may cancel at any time during the trial to avoid being charged. If not cancelled, the subscription automatically converts to a paid plan at the end of the trial.
                 </p>
