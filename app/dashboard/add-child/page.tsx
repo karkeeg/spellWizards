@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Lock, User } from "lucide-react";
+import { ArrowRight, Lock, User, Plus } from "lucide-react";
 import { useCreateChildren } from "@/hooks/use-child";
 import { useAvatars } from "@/hooks/use-avatar";
 import { useRouter } from "next/navigation";
@@ -30,6 +30,18 @@ export default function AddChildPage() {
   const { mutate: createChildren, isPending } = useCreateChildren();
   const { data: avatars, isLoading: isLoadingAvatars } = useAvatars();
   const [selectedAvatarUrl, setSelectedAvatarUrl] = useState<string>("");
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedAvatarUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     if (avatars && avatars.length > 0 && !selectedAvatarUrl) {
@@ -99,7 +111,21 @@ export default function AddChildPage() {
                 {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-12 h-12 rounded-full bg-gray-200 animate-pulse" />)}
               </div>
             ) : (
-              <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+              <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar items-center">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="relative shrink-0 w-16 h-16 rounded-full flex flex-col items-center justify-center transition-all duration-200 border-2 border-dashed border-dashboard-purple/40 text-dashboard-purple hover:bg-purple-50 hover:border-dashboard-purple hover:scale-105"
+                >
+                  <Plus size={24} />
+                </button>
                 {avatars?.map((avatar) => (
                   <button
                     key={avatar.id}

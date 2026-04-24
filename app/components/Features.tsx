@@ -11,19 +11,19 @@ const Features: FC = () => {
                         Powerful Features
                     </span>
                     <h2 className="text-[24px] md:text-[36px] font-bold text-[#1A0533] font-syne leading-[1.1] max-w-4xl mx-auto">
-                        Everything You Need to Support Your Child's Learning
+                        Structured practice, measurable progress, and personalized learning.
                     </h2>
                 </div>
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
-                    
+
                     {/* Feature 1: Game-Based Learning */}
                     <div className="md:col-span-2 bg-gradient-to-br from-white to-[#F9F7FF] rounded-[18px] border border-[#E5E7EB] p-2 flex flex-col justify-between items-center text-center group hover:shadow-2xl hover:border-purple-100 transition-all duration-500 overflow-hidden min-h-[320px]">
                         <div className="relative w-[150%] aspect-[2/1] transition-transform duration-700">
-                            <Image 
-                                src="/features/GameBased.svg" 
-                                alt="Game-Based Learning" 
+                            <Image
+                                src="/features/GameBased.svg"
+                                alt="Game-Based Learning"
                                 fill
                                 className="object-contain"
                             />
@@ -39,9 +39,9 @@ const Features: FC = () => {
                     {/* Feature 2: Parent Dashboard */}
                     <div className="md:col-span-3 bg-gradient-to-br from-white to-[#F9F7FF] rounded-[18px] border border-[#E5E7EB] p-2 flex flex-col justify-between items-center text-center group hover:shadow-2xl hover:border-purple-100 transition-all duration-500 overflow-hidden min-h-[320px]">
                         <div className="relative w-[130%] aspect-[2.5/1] transition-transform duration-700">
-                            <Image 
-                                src="/features/ParentDashboard.svg" 
-                                alt="Parent Dashboard" 
+                            <Image
+                                src="/features/ParentDashboard.svg"
+                                alt="Parent Dashboard"
                                 fill
                                 className="object-contain"
                             />
@@ -57,9 +57,9 @@ const Features: FC = () => {
                     {/* Feature 3: Custom Word Lists (Bigger) */}
                     <div className="md:col-span-3 md:h-[432px] bg-gradient-to-br from-white to-[#F9F7FF] rounded-[18px] border border-[#E5E7EB] p-2 flex flex-col justify-between items-center text-center group hover:shadow-2xl hover:border-purple-100 transition-all duration-500 overflow-hidden">
                         <div className="relative w-[120%] h-[300px] transition-transform duration-700">
-                            <Image 
-                                src="/features/CustomWord.svg" 
-                                alt="Custom Word Lists" 
+                            <Image
+                                src="/features/CustomWord.svg"
+                                alt="Custom Word Lists"
                                 fill
                                 className="object-contain"
                             />
@@ -75,9 +75,9 @@ const Features: FC = () => {
                     {/* Feature 4: Streak System (Smaller) */}
                     <div className="md:col-span-2 md:h-[432px] bg-gradient-to-br from-white to-[#F9F7FF] rounded-[18px] border border-[#E5E7EB] p-2 flex flex-col justify-between items-center text-center group hover:shadow-2xl hover:border-purple-100 transition-all duration-500 overflow-hidden">
                         <div className="relative w-[130%] h-[300px]  transition-transform duration-700">
-                            <Image 
-                                src="/features/StreakSystem.svg" 
-                                alt="Streak System" 
+                            <Image
+                                src="/features/StreakSystem.svg"
+                                alt="Streak System"
                                 fill
                                 className="object-contain"
                             />

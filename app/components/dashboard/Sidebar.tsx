@@ -5,17 +5,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
+  ChevronRight,
   LogOut,
   X,
 } from "lucide-react";
 import progress from "@/public/icons/progress.svg"
 import home from "@/public/icons/Home.svg"
-import users from "@/public/icons/child.svg"
+import users from "@/public/icons/UserCircle.svg"
 import customWords from "@/public/icons/custom words.svg"
 import addUser from "@/public/icons/add.svg"
 import settings from "@/public/icons/settings.svg"
 import { useParentProfile } from "@/hooks/use-parent-profile";
 import { useAuth } from "@/contexts/auth-context";
+import UserAvatar from "@/app/components/UserAvatar";
 
 const navItems = [
   { name: "Overview", href: "/dashboard", icon: home },
@@ -35,16 +37,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { data: profile, isLoading } = useParentProfile();
   const { logout } = useAuth();
-
-  const getInitials = (name?: string) => {
-    if (!name) return "P";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   return (
     <aside
@@ -71,7 +63,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="bg-[#F3E8FF] text-dashboard-purple text-[10px] font-black py-2 px-3 rounded-xl text-center uppercase tracking-widest border border-purple-100/50">
           Parents Portal
         </div>
+
       </div>
+      {/* full length  border  */}
+      <div className="border w-full border-[#7125F4]/20"></div>
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto hide-scrollbar">
@@ -94,11 +89,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     alt={item.name}
                     width={22}
                     height={22}
-                    className={`transition-all duration-300 ${
-                      isActive
-                        ? "grayscale-0 opacity-100 [filter:invert(13%)_sepia(95%)_saturate(2000%)_hue-rotate(263deg)_brightness(75%)]"
-                        : "grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 group-hover:[filter:invert(13%)_sepia(95%)_saturate(2000%)_hue-rotate(263deg)_brightness(75%)]"
-                    }`}
+                    className={`transition-all duration-300 ${!isActive ? "grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100" : ""}`}
                   />
                 </div>
                 <span className={`text-[15px] font-semibold transition-colors duration-300 ${isActive ? "text-dashboard-purple" : "group-hover:translate-x-0.5"
@@ -115,13 +106,18 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* User Profile Section */}
       <div className="p-4 border-t border-dashboard-border bg-gray-50/50 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 p-2 rounded-xl flex-1 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-[#D8B4FE] flex items-center justify-center text-white font-bold shrink-0">
-            {isLoading ? (
+          {isLoading ? (
+            <div className="w-10 h-10 rounded-full bg-[#D8B4FE] flex items-center justify-center text-white shrink-0">
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              getInitials(profile?.parent_name)
-            )}
-          </div>
+            </div>
+          ) : (
+            <UserAvatar 
+              name={profile?.parent_name} 
+              avatarUrl={profile?.avatar_url} 
+              className="w-10 h-10 text-white font-bold bg-[#D8B4FE]" 
+              fallbackColor="#D8B4FE" 
+            />
+          )}
           <div className="flex flex-col overflow-hidden">
             <span className="text-sm font-bold text-[#14062B] truncate">
               {isLoading

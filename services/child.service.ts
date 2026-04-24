@@ -132,6 +132,7 @@ export interface ChildStatsResponse {
   total_xp_earned: number;
   total_quests_completed: number;
   weekly_activity: WeeklyActivity[];
+  total_weekly_practice_minutes?: number;
 }
 
 export const getChildStats = async (

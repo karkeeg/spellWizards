@@ -2,7 +2,7 @@
 
 import React from "react";
 import StatCard from "../components/dashboard/StatCard";
-import LearnerCard from "../components/dashboard/LearnerCard";
+import LearnerCardWithData from "../components/dashboard/LearnerCardWithData";
 import { Sparkles, Users } from "lucide-react";
 import { AccessibilityIcon, AsteriskCircleIcon, TargetIcon, ClockIcon } from "../components/icons";
 import { useParentProfile } from "@/hooks/use-parent-profile";
@@ -50,7 +50,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Wizard image */}
-          <div className="relative w-full h-[250px] md:absolute md:right-0 md:bottom-0 md:h-full md:w-[45%] lg:w-[40%] z-0 flex-shrink-0 pointer-events-none">
+          <div className="hidden sm:block relative w-full h-[250px] md:absolute md:right-0 md:bottom-0 md:h-full md:w-[45%] lg:w-[40%] z-0 flex-shrink-0 pointer-events-none">
             <Image
               src="/dashboardGood.svg"
               alt="Dashboard Banner"
@@ -121,26 +121,10 @@ export default function DashboardPage() {
             ))
           ) : children && children.length > 0 ? (
             children.map((child, idx) => (
-              <LearnerCard
+              <LearnerCardWithData
                 key={child.child_id}
-                name={child.name}
-                grade={child.class_name}
-                age={child.age}
-                level={child.current_level}
-
-                accuracy={87}
-                weeklyPractice={child.streak_days}
-                questPercent={71 - idx * 2}
-                lastActive={
-                  idx === 0
-                    ? "Yesterday, 4:30 PM"
-                    : "Today, 9:15 AM"
-                }
-                avatarColor={
-                  child.avatar_url?.startsWith("#")
-                    ? child.avatar_url
-                    : idx === 0 ? "#F97316" : "#8B5CF6"
-                }
+                child={child}
+                idx={idx}
               />
             ))
           ) : (

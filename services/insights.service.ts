@@ -34,6 +34,36 @@ export const getChildInsightsOverview = async (
   return response.data;
 };
 
+// ─── Realm Subtopics ──────────────────────────────────────────────────────────
+
+export interface RealmSubtopic {
+  subtopicId: string;
+  name: string;
+  questsCompleted: number;
+  questsTotal: number;
+  percentProgress: number;
+  masteryStatus: string;
+}
+
+export interface RealmSubtopicsResponse {
+  realmId: string;
+  realmName: string;
+  questsCompleted: number;
+  questsTotal: number;
+  percentCompleted: number;
+  subtopics: RealmSubtopic[];
+}
+
+export const getRealmSubtopics = async (
+  childId: string,
+  realmId: string
+): Promise<RealmSubtopicsResponse> => {
+  const response = await axiosInstance.get<RealmSubtopicsResponse>(
+    `/insights/${childId}/realms/${realmId}/subtopics`
+  );
+  return response.data;
+};
+
 // ─── Parent Realms ────────────────────────────────────────────────────────────
 
 export interface Realm {

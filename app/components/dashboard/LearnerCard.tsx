@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { AsteriskCircleIcon, ClockIcon, TargetIcon } from "../icons";
+import UserAvatar from "@/app/components/UserAvatar";
 
 interface LearnerCardProps {
   name: string;
@@ -12,10 +13,11 @@ interface LearnerCardProps {
   // wordsMastered: number;
   // needsReview: number;
   accuracy: number;
-  weeklyPractice: number;
+  weeklyPractice: number | string;
   questPercent: number;
   lastActive: string;
   avatarColor: string;
+  avatarUrl?: string;
 }
 
 export default function LearnerCard({
@@ -30,18 +32,19 @@ export default function LearnerCard({
   questPercent,
   lastActive,
   avatarColor,
+  avatarUrl,
 }: LearnerCardProps) {
   return (
     <div className="bg-white p-5 md:p-6 rounded-2xl border border-[#E5E7EB] shadow-sm hover:shadow-md transition-all duration-300 group">
       {/* Header: Avatar + Name + Level */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center text-white border-3 border-white shadow-md flex-shrink-0"
-            style={{ backgroundColor: avatarColor || "#8B5CF6" }}
-          >
-            <span className="text-lg font-bold">{name.charAt(0)}</span>
-          </div>
+          <UserAvatar
+            name={name}
+            avatarUrl={avatarUrl}
+            fallbackColor={avatarColor || "#8B5CF6"}
+            className="w-12 h-12 text-lg text-white font-bold border-3 border-white shadow-md flex-shrink-0"
+          />
           <div>
             <h3 className="text-base font-bold text-[#14062B]">{name}</h3>
             <p className="text-xs text-gray-400 font-medium">
@@ -62,7 +65,7 @@ export default function LearnerCard({
 
           <div className="flex flex-col items-center gap-1">
             <TargetIcon size={28} color="#F97316" />
-             <span className="text-sm font-bold text-gray-600">{accuracy}%</span>
+            <span className="text-sm font-bold text-gray-600">{accuracy}%</span>
             <span className="text-[10px] text-gray-400 font-medium leading-tight text-center">Accuracy</span>
           </div>
 
@@ -90,7 +93,7 @@ export default function LearnerCard({
 
       {/* Last Active */}
       <div className="flex items-center gap-1.5 pt-3 border-t border-gray-100 text-xs text-gray-400 font-medium">
-        <ClockIcon size={13} className="opacity-70" />
+        <Clock size={13} color="#6B7280" className="opacity-70" />
         <span>Last Active : {lastActive}</span>
       </div>
     </div>

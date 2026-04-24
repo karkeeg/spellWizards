@@ -23,6 +23,8 @@ import {
   BadgeCheck,
   Landmark,
 } from "lucide-react";
+import { DollorIcon, InfoIcon, VoucherIcon } from "../components/icons";
+import { SubscriptionIcon } from "../components/icons/SubscriptionIcon";
 
 export default function PrivacyPolicy() {
   const [activeSection, setActiveSection] = useState("definition");
@@ -84,8 +86,8 @@ export default function PrivacyPolicy() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
           <BgBlur className="w-full h-full min-w-[1400px] max-w-none object-cover" />
         </div>
-        <div className="relative z-10 text-center max-w-3xl px-4">
-          <span className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 block">
+        <div className="relative z-10 text-center max-w-4xl px-4">
+          <span className="text-[10px] md:text-xs bg-white px-2 py-1 rounded-full w-[45%] mx-auto font-semibold text-gray-500 tracking-[0.2em] mb-4 block">
             · Last updated on 20 March 2026
           </span>
           <h1 className="text-4xl md:text-[52px] font-bold font-syne text-[#1A0533] mb-4 tracking-tight">
@@ -103,7 +105,7 @@ export default function PrivacyPolicy() {
                 key={link.id}
                 href={`#${link.id}`}
                 onClick={scrollTo(link.id)}
-                className="bg-white/80 backdrop-blur-sm border border-purple-100 text-gray-600 hover:border-purple-300 hover:text-purple-700 px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-sm hover:shadow-md"
+                className="bg-white/80 backdrop-blur-sm border border-purple-100 text-[#7C3AED] hover:border-purple-300 hover:text-purple-700 px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-sm hover:shadow-md"
               >
                 {link.label}
               </a>
@@ -149,7 +151,7 @@ export default function PrivacyPolicy() {
           <div id="definition" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8  flex items-center justify-center text-[#7C3AED]">
-                <Info className="w-6 h-6" />
+                <InfoIcon className="w-6 h-6" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Definition</h2>
             </div>
@@ -185,7 +187,7 @@ export default function PrivacyPolicy() {
           <div id="price" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <CircleDollarSign className="w-6 h-6" />
+                <DollorIcon className="w-6 h-6" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Price</h2>
             </div>
@@ -212,7 +214,7 @@ export default function PrivacyPolicy() {
           <div id="vouchers" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <Gift className="w-4 h-4" />
+                <VoucherIcon className="w-8 h-8" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Vouchers and Promotional Codes</h2>
             </div>
@@ -244,44 +246,51 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Payment</h2>
             </div>
             <p className="text-gray-500 text-[13px] md:text-sm leading-[1.7] mb-6 pl-4 md:pl-11">
-              Payment for Subscriptions is taken monthly or annually in advance from your registered bank account or debit/credit card.
+              Payment for Subscriptions is taken monthly or annually in advance from your registered bank
+              account or debit/credit card....
             </p>
 
             {/* Timeline */}
             <div className="pl-4 md:pl-11 mb-5">
-              <div className="relative flex items-center justify-between bg-[#FAF8FF] border border-purple-100 rounded-2xl p-5 overflow-hidden">
-                {/* connector line */}
-                <div className="absolute left-[calc(12.5%)] right-[calc(12.5%)] top-1/2 h-0.5 bg-purple-200 -translate-y-1/2 z-0" />
+              <div className="relative flex items-start justify-between bg-white border border-gray-100 rounded-2xl px-6 py-8">
+                {/* connector line - sits at the dot level */}
+                <div className="absolute left-[calc(12.5%+6px)] right-[calc(12.5%+6px)] top-[38px] h-[2px] bg-purple-200 z-0" />
+
                 {[
-                  { label: "Sign Up", sub: "Choose your subscription plan" },
-                  { label: "First Payment", sub: "Payment taken on sign-up date" },
-                  { label: "Auto Renewal", sub: "Billed monthly/annually recurring" },
-                  { label: "Ongoing Access", sub: "Until subscription is cancelled" },
+                  { label: "Sign Up", sub: "Register & choose your plan" },
+                  { label: "First Payment", sub: "Charged immediately on sign-up date" },
+                  { label: "Auto Renewal", sub: "On anniversary of sign-up monthly/annually" },
+                  { label: "Ongoing Access", sub: "Continue until cancelled" },
                 ].map((step, i) => (
                   <div key={i} className="relative z-10 flex flex-col items-center text-center gap-2 flex-1">
-                    <div className="w-3 h-3 rounded-full bg-[#7C3AED] border-2 border-white shadow-md shadow-purple-300" />
-                    <p className="text-[11px] font-bold text-[#1A0533]">{step.label}</p>
-                    <p className="text-[10px] text-gray-400 hidden sm:block leading-tight max-w-[80px]">{step.sub}</p>
+                    {/* Dot with purple ring */}
+                    <div className="w-3.5 h-3.5 rounded-full bg-[#7C3AED] ring-4 ring-purple-100 mb-1" />
+                    <p className="text-[12px] font-bold text-[#1A0533] leading-tight">{step.label}</p>
+                    <p className="text-[11px] text-gray-400 leading-snug max-w-[90px]">{step.sub}</p>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Warning box */}
             <div className="pl-4 md:pl-11">
               <div className="flex items-start gap-3 p-4 bg-[#FFF8F0] border border-[#FDEBD0] rounded-2xl">
-                <AlertTriangle className="w-4 h-4 text-[#E67E22] shrink-0 mt-0.5" />
-                <p className="text-[13px] text-[#935116] leading-relaxed">
-                  Recurring payments will be taken automatically on the <strong>anniversary of your sign-up date</strong>, monthly or annually depending on your subscription type. Our payment methods may vary at times.
+                <div className="w-6 h-6 rounded-full bg-[#F39C12] flex items-center justify-center shrink-0 mt-0.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-white" />
+                </div>
+                <p className="text-[13px] text-gray-700 leading-relaxed">
+                  Recurring payments will be taken automatically on the{" "}
+                  <strong className="text-gray-900">anniversary of your sign-up date</strong>, monthly or
+                  annually depending on your subscription type. Our payment methods may vary at times.
                 </p>
               </div>
             </div>
           </div>
-
           {/* ── Subscriptions ── */}
           <div id="subscriptions" className="mb-14 scroll-mt-[130px]">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                <Zap className="w-4 h-4" />
+                <SubscriptionIcon className="w-6 h-6" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold font-syne text-[#1A0533]">Subscriptions</h2>
             </div>
@@ -405,21 +414,37 @@ export default function PrivacyPolicy() {
           {/* ── Contact / Bottom CTA ── */}
           <div id="contact" className="scroll-mt-[130px]">
             <div className="mt-8 w-full rounded-[30px] bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] p-10 md:p-14 text-center relative overflow-hidden shadow-2xl shadow-purple-500/20">
+
+              {/* Background Image */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/AboutUsImage.svg" // 👈 put your image in public folder
+                  alt="background"
+                  className="absolute left-[20%] top-1/2 w-[500px] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-20"
+                />
+              </div>
+
+              {/* Gradient blobs */}
               <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/20 rounded-full blur-3xl mix-blend-overlay" />
                 <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-white/10 rounded-full blur-3xl mix-blend-overlay" />
               </div>
+
+              {/* Content */}
               <div className="relative z-10 flex flex-col items-center">
                 <div className="w-16 h-16 bg-white/10 rounded-2xl backdrop-blur-md flex items-center justify-center mb-6">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
+
                 <h3 className="text-2xl md:text-3xl font-bold font-syne text-white mb-4">
                   Need Help with Billing?
                 </h3>
+
                 <p className="text-white/80 text-[14px] md:text-[15px] mb-8 max-w-md mx-auto leading-relaxed">
                   For any billing, cancellation, or refund-related queries, our support team
                   is here to help. Reach out to us and we'll get back to you as soon as possible.
                 </p>
+
                 <a
                   href="mailto:info@spellwizards.com"
                   className="inline-flex items-center justify-center gap-2 bg-white text-[#5B21B6] px-8 py-3.5 rounded-full text-[15px] font-bold hover:bg-gray-50 transition-all shadow-xl hover:scale-105 active:scale-95"

@@ -5,6 +5,8 @@ type Plan = {
   name: string;
   price: string;
   duration: string;
+  price2?: string;
+  duration2?: string;
   features: string[];
   button: string;
   popular?: boolean;
@@ -13,7 +15,7 @@ type Plan = {
 const plans: Plan[] = [
   {
     name: "Free",
-    price: "$0",
+    price: "₹0",
     duration: "/forever",
     features: [
       "1 child profile",
@@ -26,30 +28,28 @@ const plans: Plan[] = [
   },
   {
     name: "Pro",
-    price: "$9.99",
+    price: "₹299",
     duration: "/per month",
+    price2: "₹2499",
+    duration2: "/per year",
     features: [
-      "Up to 3 children",
-      "Full progress analytics",
-      "All 4 realms unlocked",
-      "Unlimited custom words",
-      "Daily reports & alerts",
-      "Priority support",
+      "Access to custom words",
+      "Weekly reports & alerts",
+      "Access to Brain Lab",
+      "Add Wiz",
     ],
     button: "Start 14-Day Trial",
     popular: true,
   },
   {
-    name: "Family",
-    price: "$14.99",
-    duration: "/per month",
+    name: "Institution (Reach out for more details)",
+    price: "",
+    duration: "",
     features: [
-      "Unlimited children",
-      "Advanced AI insights",
-      "All 4 realms unlocked",
-      "Unlimited custom words",
-      "Real-time notifications",
-      "1-on-1 learning consultation",
+      "Access to custom words",
+      "Weekly reports & alerts",
+      "Access to Brain Lab",
+      "Add Wiz",
     ],
     button: "Start 14-Day Trial",
   },
@@ -71,16 +71,15 @@ export default function Pricing() {
         </h2>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 items-center">
           {plans.map((plan, i) => (
             <div
               key={i}
               className={`relative rounded-2xl p-8 text-left bg-white 
-              ${
-                plan.popular
-                  ? "border-4 border-purple-600 shadow-xl"
+              ${plan.popular
+                  ? "border-4 border-purple-600 shadow-xl scale-105 py-12"
                   : "border border-purple-200 shadow-md"
-              }`}
+                }`}
             >
               {/* Popular badge */}
               {plan.popular && (
@@ -94,12 +93,24 @@ export default function Pricing() {
               </h3>
 
               {/* Price */}
-              <div className="mt-3 text-purple-700 font-bold font-syne text-5xl">
-                {plan.price}
-                <span className="text-sm text-gray-500 font-medium ml-1">
-                  {plan.duration}
-                </span>
-              </div>
+              {plan.price && (
+                <div className="mt-3 text-purple-700 font-bold font-syne text-5xl">
+                  {plan.price}
+                  <span className="text-sm text-gray-500 font-medium ml-1">
+                    {plan.duration}
+                  </span>
+                </div>
+              )}
+
+              {/* Second price (Pro plan) */}
+              {plan.price2 && (
+                <div className="mt-2 text-purple-700 font-bold font-syne text-5xl">
+                  {plan.price2}
+                  <span className="text-sm text-gray-500 font-medium ml-1">
+                    {plan.duration2}
+                  </span>
+                </div>
+              )}
 
               {/* Features */}
               <ul className="mt-6 space-y-3">
@@ -114,14 +125,13 @@ export default function Pricing() {
               </ul>
 
               {/* Button */}
-              <a
-                href="/signup"
+
+              <a href="/signup"
                 className={`mt-8 w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center
-                ${
-                  plan.popular
+                ${plan.popular
                     ? "bg-purple-600 text-white"
                     : "bg-purple-50 text-purple-700 border border-purple-200"
-                }`}
+                  }`}
               >
                 {plan.button}
               </a>
@@ -129,6 +139,6 @@ export default function Pricing() {
           ))}
         </div>
       </div>
-    </section>
+    </section >
   );
 }

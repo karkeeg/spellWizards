@@ -14,14 +14,10 @@ const Hero: NextPage = () => {
         <div className="w-full max-w-[1075px] flex flex-col items-center gap-2 md:gap-[18px]">
           <div className="self-stretch flex flex-col items-center gap-2 md:gap-[12px]">
             <h1 className="self-stretch relative text-[32px] sm:text-[40px] md:text-[54px] leading-[1.1] md:leading-[114%] font-semibold text-[#1A0533] tracking-tight">
-              Turn Spelling Practice <br className="hidden sm:block" />
-              Into An Epic Adventure
+              Built for How Children Learn
             </h1>
             <p className="self-stretch relative text-sm md:text-[16px] leading-relaxed md:leading-[150%] font-poppins text-black/50 max-w-[900px] mx-auto">
-              Spell Wizards combines game-based learning with proven educational
-              methods to help children master spelling while having fun. Track
-              progress, add custom words, and watch your child's confidence
-              soar.
+              Spell Wizards helps children think, spell, and express with clarity, drawing from Indiaʼs learning traditions to build real-world capability.
             </p>
           </div>
 

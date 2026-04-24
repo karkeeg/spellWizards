@@ -7,6 +7,7 @@ import { useChildren, useUpdateChild } from "@/hooks/use-child";
 import { useAvatars } from "@/hooks/use-avatar";
 import Link from "next/link";
 import Image from "next/image";
+import UserAvatar from "@/app/components/UserAvatar";
 
 export default function SettingsPage() {
   const { data: profile, isLoading } = useParentProfile();
@@ -14,7 +15,7 @@ export default function SettingsPage() {
   const { data: avatars } = useAvatars();
   const updateParentMutation = useUpdateParentProfile();
   const updateChildMutation = useUpdateChild();
-  
+
   const [activeTab, setActiveTab] = useState("profile");
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
 
@@ -102,7 +103,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               {isEditingProfile ? (
-                <button 
+                <button
                   onClick={() => {
                     updateParentMutation.mutate({
                       parent_name: `${profileForm.firstName} ${profileForm.lastName}`.trim(),
@@ -116,7 +117,7 @@ export default function SettingsPage() {
                   {updateParentMutation.isPending ? "Saving..." : "Save Profile"}
                 </button>
               ) : (
-                <button 
+                <button
                   onClick={() => setIsEditingProfile(true)}
                   className="bg-dashboard-purple text-white px-8 py-2.5 rounded-xl font-bold hover:bg-[#6D28D9] transition-all shadow-sm active:scale-95"
                 >
@@ -132,7 +133,7 @@ export default function SettingsPage() {
                 <div className="space-y-2">
                   <label className="text-[13px] font-bold text-[#8E78B3] ml-1">First Name</label>
                   {isEditingProfile ? (
-                    <input 
+                    <input
                       value={profileForm.firstName}
                       onChange={(e) => setProfileForm(p => ({ ...p, firstName: e.target.value }))}
                       className="w-full bg-white border border-purple-100/50 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all shadow-sm"
@@ -146,7 +147,7 @@ export default function SettingsPage() {
                 <div className="space-y-2">
                   <label className="text-[13px] font-bold text-[#8E78B3] ml-1">Last Name</label>
                   {isEditingProfile ? (
-                    <input 
+                    <input
                       value={profileForm.lastName}
                       onChange={(e) => setProfileForm(p => ({ ...p, lastName: e.target.value }))}
                       className="w-full bg-white border border-purple-100/50 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all shadow-sm"
@@ -166,7 +167,7 @@ export default function SettingsPage() {
                 <div className="space-y-2">
                   <label className="text-[13px] font-bold text-[#8E78B3] ml-1">Phone</label>
                   {isEditingProfile ? (
-                    <input 
+                    <input
                       value={profileForm.phone}
                       onChange={(e) => setProfileForm(p => ({ ...p, phone: e.target.value }))}
                       className="w-full bg-white border border-purple-100/50 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all shadow-sm"
@@ -181,7 +182,7 @@ export default function SettingsPage() {
                   <label className="text-[13px] font-bold text-[#8E78B3] ml-1">Gender</label>
                   {isEditingProfile ? (
                     <div className="relative">
-                      <select 
+                      <select
                         value={profileForm.gender}
                         onChange={(e) => setProfileForm(p => ({ ...p, gender: e.target.value }))}
                         className="w-full bg-white border border-purple-100/50 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all shadow-sm appearance-none"
@@ -226,9 +227,9 @@ export default function SettingsPage() {
         return (
           <div className="animate-fade-in relative min-h-[500px] flex flex-col">
             {/* Background Wizard Image */}
-            <div className="absolute bottom-0 right-0 w-[700px] h-[700px] opacity-[0.07] pointer-events-none z-0">
+            <div className="absolute bottom-[0%] right-[0%] w-[800px] h-[800px]  pointer-events-none z-0">
               <Image
-                src="/AboutUsImage.svg"
+                src="/security.svg"
                 alt="Wizard Illustration"
                 fill
                 className="object-contain object-right-bottom"
@@ -279,7 +280,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="flex justify-end pt-4">
-                    <button 
+                    <button
                       onClick={() => {
                         if (securityForm.newPassword !== securityForm.confirmPassword) {
                           alert("Passwords do not match");
@@ -326,11 +327,11 @@ export default function SettingsPage() {
         if (selectedChildId) {
           const child = children?.find(c => c.child_id === selectedChildId);
           if (!child) return null;
-          
+
           return (
             <div className="animate-fade-in space-y-8 max-w-3xl pb-10">
               {/* Back button */}
-              <button 
+              <button
                 onClick={() => setSelectedChildId(null)}
                 className="flex items-center gap-2 text-dashboard-purple font-bold hover:underline mb-2"
               >
@@ -369,9 +370,8 @@ export default function SettingsPage() {
                       <button
                         key={avatar.id}
                         onClick={() => setChildForm(s => ({ ...s, avatarUrl: avatar.image_url }))}
-                        className={`relative w-16 h-16 rounded-full shrink-0 border-4 transition-all ${
-                          childForm.avatarUrl === avatar.image_url ? "border-dashboard-purple scale-110" : "border-transparent hover:border-purple-200"
-                        }`}
+                        className={`relative w-16 h-16 rounded-full shrink-0 border-4 transition-all ${childForm.avatarUrl === avatar.image_url ? "border-dashboard-purple scale-110" : "border-transparent hover:border-purple-200"
+                          }`}
                       >
                         <Image src={avatar.image_url} alt={avatar.name} fill className="object-cover rounded-full" />
                       </button>
@@ -384,8 +384,8 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-[#8E78B3] ml-1">Display Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={childForm.name}
                     onChange={(e) => setChildForm(s => ({ ...s, name: e.target.value }))}
                     className="w-full bg-white border border-[#D8D4FF] rounded-[1.2rem] px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-dashboard-purple/10 focus:border-dashboard-purple transition-all shadow-sm"
@@ -393,8 +393,8 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-[#8E78B3] ml-1">Username (Login ID)</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={childForm.username}
                     onChange={(e) => setChildForm(s => ({ ...s, username: e.target.value }))}
                     className="w-full bg-white border border-[#D8D4FF] rounded-[1.2rem] px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-dashboard-purple/10 focus:border-dashboard-purple transition-all shadow-sm"
@@ -405,7 +405,7 @@ export default function SettingsPage() {
               <div className="space-y-2 max-w-sm mt-6">
                 <label className="text-sm font-semibold text-[#8E78B3] ml-1">Learning Level</label>
                 <div className="relative">
-                  <select 
+                  <select
                     value={childForm.level}
                     onChange={(e) => setChildForm(s => ({ ...s, level: e.target.value }))}
                     className="w-full bg-white border border-[#D8D4FF] rounded-[1.2rem] px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-dashboard-purple/10 focus:border-dashboard-purple transition-all shadow-sm appearance-none"
@@ -432,8 +432,8 @@ export default function SettingsPage() {
                 <div className="space-y-5">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-[#8E78B3] ml-1">New Password</label>
-                    <input 
-                      type="password" 
+                    <input
+                      type="password"
                       value={childForm.newPassword}
                       onChange={(e) => setChildForm(s => ({ ...s, newPassword: e.target.value }))}
                       className="w-full bg-white rounded-[1.2rem] px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-dashboard-purple/10 focus:border-dashboard-purple transition-all shadow-sm border border-purple-100/50"
@@ -441,8 +441,8 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-[#8E78B3] ml-1">Confirm Password *</label>
-                    <input 
-                      type="password" 
+                    <input
+                      type="password"
                       value={childForm.confirmPassword}
                       onChange={(e) => setChildForm(s => ({ ...s, confirmPassword: e.target.value }))}
                       className="w-full bg-white rounded-[1.2rem] px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-dashboard-purple/10 focus:border-dashboard-purple transition-all shadow-sm border border-purple-100/50"
@@ -453,7 +453,7 @@ export default function SettingsPage() {
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row items-center gap-6 pt-8 border-t border-gray-100 mt-8">
-                <button 
+                <button
                   onClick={() => {
                     if (childForm.newPassword && childForm.newPassword !== childForm.confirmPassword) {
                       alert("Passwords do not match");
@@ -486,7 +486,7 @@ export default function SettingsPage() {
 
         return (
           <div className="space-y-6 animate-fade-in">
-            
+
             {/* Heading */}
             <div className="flex items-center justify-between">
               <div>
@@ -510,9 +510,12 @@ export default function SettingsPage() {
                   key={child.child_id}
                   className="bg-white border-2 border-[#D8D4FF] rounded-[2rem] p-4 flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl"
                 >
-                  <div className="w-16 h-16 rounded-full bg-[#FFB820] flex items-center justify-center text-white text-5xl font-black font-syne mb-6">
-                    {child.name[0]}
-                  </div>
+                  <UserAvatar
+                    name={child.name}
+                    avatarUrl={child.avatar_url?.startsWith("#") ? undefined : child.avatar_url}
+                    fallbackColor={child.avatar_url?.startsWith("#") ? child.avatar_url : "#FFB820"}
+                    className="w-16 h-16 text-3xl text-white font-black font-syne mb-6"
+                  />
 
                   <h4 className="text-lg md:text-xl font-black text-[#14062B]  font-syne">
                     {child.name}
@@ -522,7 +525,7 @@ export default function SettingsPage() {
                     @{child.name.toLowerCase().replace(" ", "_")}
                   </p>
 
-                  <button 
+                  <button
                     onClick={() => setSelectedChildId(child.child_id)}
                     className="w-full bg-[#EFEEFF] text-[#7C3AED] py-3 rounded-[1rem] text-lg hover:bg-[#7B61FF] hover:text-white"
                   >
@@ -600,7 +603,7 @@ export default function SettingsPage() {
                   : "text-[#8E78B3] hover:bg-gray-50 hover:text-[#14062B]"
                   }`}
               >
-                <item.icon size={20}  className={activeTab === item.id ? "text-dashboard-purple " : "text-[#8E78B3]"} />
+                <item.icon size={20} className={activeTab === item.id ? "text-dashboard-purple " : "text-[#8E78B3]"} />
                 {item.label}
               </button>
             ))}

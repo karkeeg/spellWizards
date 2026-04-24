@@ -26,9 +26,11 @@ import {
   Timer,
   Clock
 } from "lucide-react";
-import { TargetIcon, AsteriskCircleIcon, ClockIcon, AccessibilityIcon } from "@/app/components/icons";
+import { TargetIcon, AsteriskCircleIcon, ClockIcon, AccessibilityIcon, StreakIcon } from "@/app/components/icons";
 import { useChildren, useChildStats } from "@/hooks/use-child";
 import { useChildInsights, useParentRealms } from "@/hooks/use-insights";
+import RealmProgressCard from "@/app/components/dashboard/RealmProgressCard";
+import UserAvatar from "@/app/components/UserAvatar";
 
 // ─── Static mock data (only for panels without API yet) ───────────────────────
 const WEEKLY_XP_FALLBACK = [
@@ -201,12 +203,12 @@ export default function ProgressPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           {/* Avatar + name */}
           <div className="flex items-center gap-4">
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-md flex-shrink-0"
-              style={{ backgroundColor: avatarColor }}
-            >
-              {child.name.charAt(0)}
-            </div>
+            <UserAvatar 
+              name={child.name} 
+              avatarUrl={child.avatar_url?.startsWith("#") ? undefined : child.avatar_url} 
+              fallbackColor={avatarColor} 
+              className="w-14 h-14 text-2xl text-white font-bold shadow-md flex-shrink-0" 
+            />
             <div>
               <h2 className="text-lg font-bold text-[#14062B]">{child.name}</h2>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -216,19 +218,16 @@ export default function ProgressPage() {
           </div>
 
           {/* Stats row */}
-          <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-4 mt-4 sm:mt-0">
             <StatItem icon={<Gem size={18} fill="#3D85FD" className="text-blue-500" />} value={`Lv. ${child.current_level}`} label="Level" />
             <div className="w-px h-8 bg-gray-100 hidden sm:block" />
             <StatItem icon={<Zap size={18} fill="#7C3AED" color="#7C3AED" className="text-yellow-500" />} value={(stats?.total_xp_earned ?? child.xp).toLocaleString()} label="Total XP" />
             <div className="w-px h-8 bg-gray-100 hidden sm:block" />
             <StatItem icon={<CompassIcon size={20} color="white" fill="#16A34A" className="" />} value={String(stats?.total_quests_completed ?? 0)} label="Quests" />
             <div className="w-px h-8 bg-gray-100 hidden sm:block" />
-            <StatItem icon={<Target size={18} className="text-orange-500" />} value="87%" label="Accuracy" />
+            <StatItem icon={<StreakIcon size={20} className="text-orange-600" />} value={String(child.streak_days)} label="Day Streak" />
             <div className="w-px h-8 bg-gray-100 hidden sm:block" />
-            <StatItem icon={<Flame size={18} fill="#F97316" className="text-orange-600" />} value={String(child.streak_days)} label="Day Streak" />
-            
-              <div className="w-px h-8 bg-gray-100 hidden sm:block" />
-            <StatItem icon={<Clock size={18} fill="#00B3DE" className="text-white" />} value={'0'} label="Weekly Practice" />
+            <StatItem icon={<Clock size={18} fill="#00B3DE" className="text-white" />} value={stats?.total_weekly_practice_minutes ? `${(stats.total_weekly_practice_minutes / 60).toFixed(1)}h` : '0h'} label="Weekly Practice" />
           </div>
         </div>
 
@@ -338,29 +337,29 @@ export default function ProgressPage() {
 
         {/* Weekly XP Activity */}
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-sm">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-500">
-              <ChartScatter size={24} />
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-[#F3E8FF] flex items-center justify-center text-[#7C3AED]">
+              <ChartScatter size={26} strokeWidth={2.5} />
             </div>
-            <h3 className="text-base font-bold text-[#14062B]">Weekly XP Activity</h3>
+            <h3 className="text-[20px] font-bold text-[#14062B]">Weekly XP Activity</h3>
           </div>
-          <div className="flex items-end justify-between gap-1 h-28 pb-1">
+          <div className="flex items-end justify-between gap-1 sm:gap-2 h-40 sm:h-56 pb-2">
             {(stats?.weekly_activity ?? WEEKLY_XP_FALLBACK).map((d) => {
               const isToday = d.day === todayName;
               const heightPct = Math.min((d.xp / maxWeeklyXp) * 100, 100);
               const displayDay = d.day.slice(0, 3);
               return (
-                <div key={d.day} className="flex flex-col items-center gap-1 flex-1">
-                  <span className="text-[11px] text-gray-400 font-semibold">{d.xp}</span>
+                <div key={d.day} className="flex flex-col items-center justify-end gap-2 flex-1 h-full">
+                  <span className="text-[12px] font-bold text-[#8B5CF6]/70">{d.xp}</span>
                   <div
-                    className="w-full rounded-t-sm transition-all duration-500"
+                    className="w-full rounded-t-xl transition-all duration-500"
                     style={{
                       height: `${heightPct}%`,
                       minHeight: 4,
-                      backgroundColor: isToday ? "#7C3AED" : "#C4B5FD",
+                      backgroundColor: isToday ? "#7C3AED" : "#E9D5FF",
                     }}
                   />
-                  <span className={`text-[11px] font-medium ${isToday ? "text-[#7C3AED] font-bold" : "text-gray-400"}`}>{displayDay}</span>
+                  <span className={`text-[13px] font-bold ${isToday ? "text-[#8B5CF6]/70" : "text-[#8B5CF6]/70"}`}>{displayDay}</span>
                 </div>
               );
             })}
@@ -381,67 +380,7 @@ export default function ProgressPage() {
         ) : finalRealmCards.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {finalRealmCards.map((realm) => (
-              <div
-                key={realm.id}
-                className="bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-sm"
-              >
-                {/* Title + % */}
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-base font-bold text-[#14062B]">{realm.name}</h4>
-                  <span className="text-base font-bold text-[#7C3AED]">{realm.percent}%</span>
-                </div>
-
-                {/* Description */}
-                {realm.description && (
-                  <p className="text-xs text-gray-500 leading-relaxed mb-3">{realm.description}</p>
-                )}
-
-                {/* Topics as tags */}
-                {realm.topics.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {realm.topics.map((topic) => (
-                      <span
-                        key={topic}
-                        className="px-3 py-1 bg-purple-50 text-purple-600 text-xs font-semibold rounded-full border border-purple-100"
-                      >
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Progress bar */}
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-1.5">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{
-                      width: `${realm.percent}%`,
-                      backgroundColor: realm.barColor,
-                    }}
-                  />
-                </div>
-
-                {/* Quest info */}
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-xs text-gray-400 font-medium">
-                    {realm.questsDone} / {realm.questsTotal} Quests
-                  </p>
-                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${realm.status === "completed" ? "bg-green-50 text-green-600" :
-                    realm.status === "in_progress" ? "bg-blue-50 text-blue-600" :
-                      "bg-gray-50 text-gray-400"
-                    }`}>
-                    {realm.status === "not_started" ? "Not Started" :
-                      realm.status === "in_progress" ? "In Progress" :
-                        realm.status === "completed" ? "Completed" :
-                          realm.status.replace(/_/g, " ")}
-                  </span>
-                </div>
-
-                {/* View breakdown */}
-                <button className="text-xs font-semibold text-[#7C3AED] hover:underline">
-                  View Topic breakdown
-                </button>
-              </div>
+              <RealmProgressCard key={realm.id} childId={childId!} realm={realm} />
             ))}
           </div>
         ) : (

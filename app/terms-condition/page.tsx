@@ -15,6 +15,7 @@ import {
 import Navbar from "@/app/components/Header";
 import BgBlur from "@/app/components/BgBlur";
 import Footer from "@/app/components/Footer";
+import { InfoIcon } from "../components/icons";
 
 export default function TermsAndConditions() {
     const [activeSection, setActiveSection] = useState("intro");
@@ -76,28 +77,28 @@ export default function TermsAndConditions() {
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
                     <BgBlur className="w-full h-full min-w-[1400px] max-w-none object-cover" />
                 </div>
-                <div className="relative z-10 text-center max-w-3xl px-4">
-                    <span className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 block">
+                <div className="relative z-10 text-center  px-4">
+                    <span className="text-[10px]  md:text-xs font-bold bg-white rounded-lg px-2 py-1 w-fit m-auto text-gray-400 uppercase tracking-[0.2em] mb-4 block">
                         · Last updated on 20 March 2026
                     </span>
                     <h1 className="text-4xl md:text-[52px] font-bold font-syne text-[#1A0533] mb-4 tracking-tight">
                         Terms and Conditions
                     </h1>
-                    <p className="text-gray-500 text-sm md:text-base mb-8 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-gray-500 text-sm md:text-base max-w-4xl mb-8 max-w-3xl mx-auto text-start leading-relaxed">
                         For the purpose of these Terms and Conditions, The term "we", "us", "our" used anywhere on this
-                        page shall mean YUSAYA HEALTH PRIVATE LIMITED; "you", "your", "user", "visitor" shall mean any
+                        page shall mean <b>YUGAYA HEALTH PRIVATE LIMITED</b>; "you", "your", "user", "visitor" shall mean any
                         natural or legal person who is visiting our website and/or Spell Wizards application and/or
                         agreed to purchase from us.
                     </p>
 
                     {/* Quick Nav Pills */}
-                    <div className="flex flex-wrap justify-center gap-2">
+                    <div className="flex flex-wrap justify-center max-w-6xl gap-2">
                         {sidebarLinks.map((link) => (
                             <a
                                 key={link.id}
                                 href={`#${link.id}`}
                                 onClick={scrollTo(link.id)}
-                                className="bg-white/80 backdrop-blur-sm border border-purple-100 text-gray-600 hover:border-purple-300 hover:text-purple-700 px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-sm hover:shadow-md"
+                                className="bg-white/80 backdrop-blur-sm border border-purple-100 text-[#7C3AED] hover:border-purple-300 hover:text-purple-700 px-4 py-2 rounded-full text-xs font-semibold transition-all shadow-sm hover:shadow-md"
                             >
                                 {link.label}
                             </a>
@@ -112,7 +113,8 @@ export default function TermsAndConditions() {
                 {/* Sidebar */}
                 <aside className="w-full md:w-[260px] shrink-0 order-2 md:order-1 mt-8 md:mt-0">
                     <div className="sticky top-[120px] flex flex-col p-4 rounded-3xl bg-[#F9F7FF]/80 backdrop-blur-sm border border-purple-100/50 shadow-sm">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 px-4 mb-3">On This Page</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-[#5427A9] px-4 pt-2">On This Page</p>
+                        <div className="w-full h-[1px] border border-gray-200 my-2" />
                         <div className="flex flex-col gap-1.5">
                             {sidebarLinks.map((link) => (
                                 <a
@@ -120,8 +122,8 @@ export default function TermsAndConditions() {
                                     href={`#${link.id}`}
                                     onClick={scrollTo(link.id)}
                                     className={`px-4 py-3 rounded-2xl text-[13px] font-semibold transition-all duration-300 ${activeSection === link.id
-                                        ? "bg-[#7C3AED] text-white shadow-md shadow-purple-500/20 translate-x-1"
-                                        : "text-gray-500 hover:text-[#7C3AED] hover:bg-purple-50/50"
+                                        ? " text-[#5427A9]"
+                                        : "text-violet-500 hover:text-[#7C3AED] hover:bg-purple-50/50"
                                         }`}
                                 >
                                     {link.label}
@@ -138,8 +140,8 @@ export default function TermsAndConditions() {
                     <div id="intro" className="mb-14 scroll-mt-[130px]">
                         <div className="bg-[#FAF8FF] border-l-4 border-[#7C3AED] rounded-2xl p-6 text-[13px] text-gray-500 leading-[1.75] space-y-4">
                             <div className="flex items-center gap-2 mb-1">
-                                <div className="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center text-[#7C3AED]">
-                                    <Info className="w-3.5 h-3.5" />
+                                <div className="w-8 h-8 flex items-center justify-center text-[#7C3AED]">
+                                    <InfoIcon className="w-6 h-6" />
                                 </div>
                                 <h2 className="text-base font-bold font-syne text-[#1A0533]">Intro</h2>
                             </div>
