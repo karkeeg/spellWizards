@@ -5,6 +5,7 @@ export interface UpdateParentRequest {
   parent_name?: string;
   phone_number?: string;
   gender?: string;
+  avatar_url?: string;
   current_password?: string;
   new_password?: string;
 }
@@ -14,6 +15,7 @@ export interface ParentProfile {
   parent_name: string;
   email: string;
   onboarding_status: "completed" | "pending";
+  avatar_url?: string;
   created_at: string;
 }
 

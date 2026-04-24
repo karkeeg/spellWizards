@@ -128,11 +128,23 @@ export interface WeeklyActivity {
   xp: number;
 }
 
+export interface WeeklyPracticeActivity {
+  day: string;
+  practice_minutes: number;
+}
+
 export interface ChildStatsResponse {
   total_xp_earned: number;
+  current_level: number;
+  xp_into_current_level: number;
+  xp_needed_for_next_level: number;
+  xp_remaining_to_next_level: number;
+  level_progress_percent: number;
   total_quests_completed: number;
   weekly_activity: WeeklyActivity[];
-  total_weekly_practice_minutes?: number;
+  total_weekly_practice_ms: number;
+  total_weekly_practice_minutes: number;
+  weekly_practice_activity: WeeklyPracticeActivity[];
 }
 
 export const getChildStats = async (

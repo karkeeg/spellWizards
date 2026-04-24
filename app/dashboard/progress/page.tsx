@@ -123,8 +123,13 @@ export default function ProgressPage() {
 
   const child = selectedChild!;
   const avatarColor = AVATAR_COLORS[selectedIdx % AVATAR_COLORS.length];
-  const nextLevelXp = 30000;
-  const xpProgress = Math.min((child.xp / nextLevelXp) * 100, 100);
+  
+  // XP Progress values
+  const currentLevel = stats?.current_level ?? child.current_level;
+  const xpIntoCurrentLevel = stats?.xp_into_current_level ?? 0;
+  const xpNeededForNextLevel = stats?.xp_needed_for_next_level ?? 10000;
+  const xpRemaining = stats?.xp_remaining_to_next_level ?? (xpNeededForNextLevel - xpIntoCurrentLevel);
+  const xpProgress = stats?.level_progress_percent ?? Math.min((xpIntoCurrentLevel / xpNeededForNextLevel) * 100, 100);
 
   // Attributes from API (Personality Traits panel)
   const attributes = insights?.attributes ?? [];
@@ -235,10 +240,10 @@ export default function ProgressPage() {
         <div className="mt-4 pt-4 border-t border-gray-50">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-gray-500">
-              XP Progress to Level {child.current_level + 1}
+              XP Progress to Level {currentLevel + 1}
             </span>
             <span className="text-xs font-bold text-gray-400">
-              {child.xp.toLocaleString()} / {nextLevelXp.toLocaleString()}
+              {xpIntoCurrentLevel.toLocaleString()} / {xpNeededForNextLevel.toLocaleString()} XP ({xpRemaining.toLocaleString()} remaining)
             </span>
           </div>
           <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
