@@ -18,7 +18,7 @@ export const authenticateParent = async (
   data: AuthRequest,
 ): Promise<AuthResponse> => {
   const response = await axiosInstance.post<AuthResponse>(
-    "/auth/parent/authenticate",
+    "/auth/parent/login",
     data,
   );
   return response.data;

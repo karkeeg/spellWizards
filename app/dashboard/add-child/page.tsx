@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Lock, User, Plus } from "lucide-react";
+import { ArrowRight, Lock, User, Plus, Trash2 } from "lucide-react";
 import { useCreateChildren } from "@/hooks/use-child";
-import { useAvatars } from "@/hooks/use-avatar";
+import { useAvatars, useAddAvatar, useDeleteAvatar } from "@/hooks/use-avatar";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -29,17 +29,38 @@ export default function AddChildPage() {
   const router = useRouter();
   const { mutate: createChildren, isPending } = useCreateChildren();
   const { data: avatars, isLoading: isLoadingAvatars } = useAvatars();
+  const { mutate: addAvatar, isPending: isAddingAvatar } = useAddAvatar();
+  const { mutate: deleteAvatar } = useDeleteAvatar();
+  
   const [selectedAvatarUrl, setSelectedAvatarUrl] = useState<string>("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log("File selected:", file?.name);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedAvatarUrl(reader.result as string);
+        const base64String = reader.result as string;
+        addAvatar({
+          name: file.name.split('.')[0] || "Custom Avatar",
+          image_url: base64String
+        }, {
+          onSuccess: (newAvatar) => {
+            console.log("Avatar added successfully:", newAvatar);
+            setSelectedAvatarUrl(newAvatar.image_url);
+          },
+          onError: (err) => {
+            console.error("Avatar add failed:", err);
+          }
+        });
       };
       reader.readAsDataURL(file);
+      
+      // Clear the input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -122,23 +143,41 @@ export default function AddChildPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="relative shrink-0 w-16 h-16 rounded-full flex flex-col items-center justify-center transition-all duration-200 border-2 border-dashed border-dashboard-purple/40 text-dashboard-purple hover:bg-purple-50 hover:border-dashboard-purple hover:scale-105"
+                  disabled={isAddingAvatar}
+                  className="relative shrink-0 w-16 h-16 rounded-full flex flex-col items-center justify-center transition-all duration-200 border-2 border-dashed border-dashboard-purple/40 text-dashboard-purple hover:bg-purple-50 hover:border-dashboard-purple hover:scale-105 disabled:opacity-50"
                 >
-                  <Plus size={24} />
+                  <Plus size={24} className={isAddingAvatar ? "animate-spin" : ""} />
                 </button>
                 {avatars?.map((avatar) => (
-                  <button
-                    key={avatar.id}
-                    type="button"
-                    onClick={() => setSelectedAvatarUrl(avatar.image_url)}
-                    className={`relative shrink-0 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200 ${
-                      selectedAvatarUrl === avatar.image_url
-                        ? "ring-4 ring-offset-2 ring-dashboard-purple scale-110 shadow-lg"
-                        : "opacity-60 hover:opacity-100 hover:scale-105 hover:ring-2 hover:ring-purple-200"
-                    }`}
-                  >
-                    <Image src={avatar.image_url} alt={avatar.name} fill className="object-cover rounded-full bg-purple-50" />
-                  </button>
+                  <div key={avatar.id} className="relative group shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedAvatarUrl(avatar.image_url)}
+                      className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200 ${
+                        selectedAvatarUrl === avatar.image_url
+                          ? "ring-4 ring-offset-2 ring-dashboard-purple scale-110 shadow-lg"
+                          : "opacity-60 hover:opacity-100 hover:scale-105 hover:ring-2 hover:ring-purple-200"
+                      }`}
+                    >
+                      <Image src={avatar.image_url} alt={avatar.name || "Avatar"} fill className="object-cover rounded-full bg-purple-50" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (window.confirm("Are you sure you want to delete this avatar?")) {
+                          deleteAvatar(avatar.id);
+                          if (selectedAvatarUrl === avatar.image_url) {
+                            setSelectedAvatarUrl("");
+                          }
+                        }
+                      }}
+                      className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm hover:bg-red-600 hover:scale-110"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
