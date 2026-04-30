@@ -32,6 +32,7 @@ export default function DashboardPage() {
     return "Good Night";
   };
 
+  
   const greeting = getGreeting();
 
   return (
@@ -85,7 +86,7 @@ export default function DashboardPage() {
 
         <StatCard
           title="Avg. Accuracy"
-          value="91%"
+          value={`0%`}
           label="This week"
           icon={TargetIcon}
           color="text-orange-500"

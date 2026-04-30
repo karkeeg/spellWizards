@@ -87,7 +87,7 @@ export default function CustomWordsPage() {
   const wordsList = Array.isArray(words) ? words : [];
   const totalWords = wordsList.length;
   const masteredWords = wordsList.filter((w) => w.status === "mastered").length;
-  const needsReviewWords = wordsList.filter((w) => w.status === "active").length;
+ const accuracy = totalWords > 0 ? Math.round((masteredWords / totalWords) * 100) : 0;
 
   const handleAddWord = () => {
     if (!newWord.trim() || !selectedChildId) return;
@@ -98,7 +98,7 @@ export default function CustomWordsPage() {
           toast.success(`"${newWord.trim()}" added to ${selectedChildFirstName}'s list!`);
           setNewWord("");
         },
-        onError: () => toast.error("Failed to add word. Please try again."),
+        onError: () => toast.error("Failed to add word. Please Enter Valid English word. "),
       }
     );
   };
@@ -139,23 +139,14 @@ export default function CustomWordsPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <StatCard
-          value={masteredWords || 89}
+          value={masteredWords }
           label="Words Mastered"
           color="#DE00DA"
           icon={<AsteriskCircleIcon size={140} className="opacity-10" />}
         />
+       
         <StatCard
-          value={needsReviewWords || 14}
-          label="Needs Review"
-          color="#FF4D4D"
-          icon={
-            <div className="w-32 h-32 bg-[#FFE4E4] rounded-full flex items-center justify-center">
-              <AccessibilityIcon size={120} color="#FFFFFF" className="opacity-100" />
-            </div>
-          }
-        />
-        <StatCard
-          value="87%"
+          value={`${accuracy}%`}
           label="Accuracy"
           color="#FF4D4D"
           icon={<TargetIcon size={140} className="opacity-10" />}
@@ -196,7 +187,7 @@ export default function CustomWordsPage() {
 
             <div className="bg-[#FFF9EE] p-5 rounded-2xl border border-orange-100/50">
               <p className="text-sm font-bold text-orange-800 leading-relaxed text-center">
-                <span className="text-orange-500">Tip:</span> Add words from homework, books, or topics you&apos;re exploring together!
+                <span className="text-orange-500">Tip:</span> Provide Words that are legit English words, Avoid Slang, Abbreviations, or Proper Nouns for best results.
               </p>
             </div>
           </div>
