@@ -14,7 +14,18 @@ import {
   ChildStatsResponse,
   updateChild,
   UpdateChildRequest,
+  deleteChild,
 } from "@/services/child.service";
+
+export function useDeleteChild() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (childId: string) => deleteChild(childId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["children"] });
+    },
+  });
+}
 
 export function useUpdateChild() {
   const queryClient = useQueryClient();
@@ -28,8 +39,12 @@ export function useUpdateChild() {
 }
 
 export function useCreateChildren() {
+  const queryClient = useQueryClient();
   return useMutation<ChildProfileResponse[], Error, BatchCreateChildrenRequest>({
     mutationFn: (data: BatchCreateChildrenRequest) => createChildren(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["children"] });
+    },
   });
 }
 

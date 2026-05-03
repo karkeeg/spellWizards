@@ -4,20 +4,21 @@ import React, { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import { WandIcon } from "../components/WandIcon";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useLogin } from "@/hooks/use-auth";
+import { useSignup } from "@/hooks/use-auth";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   
-  const { mutate: login, isPending } = useLogin();
+  const { mutate: signup, isPending } = useSignup();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
-    login({ email, password });
+    if (!fullName || !email || !password) return;
+    signup({ full_name: fullName, email, password });
   };
 
   return (
@@ -36,10 +37,10 @@ export default function LoginPage() {
           </div>
 
         <h1 className="text-[26px] md:text-[28px] font-bold text-[#1A0533] font-syne tracking-tight">
-          Welcome Back
+          Create Account
         </h1>
         <p className="text-gray-500 mb-6 text-[13px] md:text-sm font-poppins">
-          Enter your details to access your account
+          Join Spell Wizards and start learning today
         </p>
 
         <button 
@@ -60,7 +61,21 @@ export default function LoginPage() {
           <div className="h-px flex-1 bg-gray-100"></div>
         </div>
 
-        <form onSubmit={handleLogin} className="w-full space-y-4">
+        <form onSubmit={handleSignup} className="w-full space-y-4">
+          <div className="text-left space-y-1.5">
+            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em] ml-1">
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full h-12 px-4 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-[#7C3AED] focus:ring-4 focus:ring-purple-500/5 outline-none transition-all text-[14px] font-medium"
+              required
+            />
+          </div>
+
           <div className="text-left space-y-1.5">
             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em] ml-1">
               Email Address
@@ -76,12 +91,9 @@ export default function LoginPage() {
           </div>
 
           <div className="text-left space-y-1.5">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em]">
-                Password
-              </label>
-              <a href="#" className="text-[11px] font-bold text-[#7C3AED] hover:underline">Forgot?</a>
-            </div>
+            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em] ml-1">
+              Password
+            </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -113,18 +125,18 @@ export default function LoginPage() {
             {isPending ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Signing in...
+                Creating account...
               </>
             ) : (
-              "Sign In"
+              "Sign Up"
             )}
           </button>
         </form>
 
         <p className="mt-8 text-[13px] text-gray-500 font-poppins">
-          Don't have an account?{" "}
-          <a href="/signup" className="text-[#7C3AED] font-bold hover:underline">
-            Create one
+          Already have an account?{" "}
+          <a href="/login" className="text-[#7C3AED] font-bold hover:underline">
+            Sign In
           </a>
         </p>
         </div>

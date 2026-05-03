@@ -2,10 +2,11 @@ import axiosInstance from "@/lib/axios";
 
 export interface ChatbotRequest {
   parent_input: string;
+  child_id?: string;
 }
 
 export interface ChatbotResponse {
-  child_id: string;
+  child_id?: string;
   parent_input: string;
   resolved_intent: string;
   generated_response: string;
@@ -13,12 +14,16 @@ export interface ChatbotResponse {
 }
 
 export const sendChatMessage = async (
-  childId: string,
+  childId: string | null,
   data: ChatbotRequest
 ): Promise<ChatbotResponse> => {
+  const url = childId && childId !== "general"
+    ? `/parent/chatbot?child_id=${childId}`
+    : `/parent/chatbot`;
+    
   const response = await axiosInstance.post<ChatbotResponse>(
-    `/parent/chatbot?child_id=${childId}`,
-    data
+    url,
+    { parent_input: data.parent_input }
   );
   return response.data;
 };

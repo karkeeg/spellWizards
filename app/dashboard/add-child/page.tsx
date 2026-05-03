@@ -31,7 +31,7 @@ export default function AddChildPage() {
   const { data: avatars, isLoading: isLoadingAvatars } = useAvatars();
   const { mutate: addAvatar, isPending: isAddingAvatar } = useAddAvatar();
   const { mutate: deleteAvatar } = useDeleteAvatar();
-  
+
   const [selectedAvatarUrl, setSelectedAvatarUrl] = useState<string>("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -39,24 +39,19 @@ export default function AddChildPage() {
     const file = e.target.files?.[0];
     console.log("File selected:", file?.name);
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        addAvatar({
-          name: file.name.split('.')[0] || "Custom Avatar",
-          image_url: base64String
-        }, {
-          onSuccess: (newAvatar) => {
-            console.log("Avatar added successfully:", newAvatar);
-            setSelectedAvatarUrl(newAvatar.image_url);
-          },
-          onError: (err) => {
-            console.error("Avatar add failed:", err);
-          }
-        });
-      };
-      reader.readAsDataURL(file);
-      
+      addAvatar({
+        name: file.name.split('.')[0] || "Custom Avatar",
+        file: file
+      }, {
+        onSuccess: (newAvatar) => {
+          console.log("Avatar added successfully:", newAvatar);
+          setSelectedAvatarUrl(newAvatar.image_url);
+        },
+        onError: (err) => {
+          console.error("Avatar add failed:", err);
+        }
+      });
+
       // Clear the input so the same file can be selected again
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -85,6 +80,26 @@ export default function AddChildPage() {
       toast.error("Please fill in all required fields.");
       return;
     }
+
+    // Validation check: if it contains @ it's an email, otherwise it's a username
+    const isEmail = email.includes("@");
+    if (isEmail) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
+    } else {
+      // Username validation: minimum 3 characters, no spaces
+      if (email.length < 3) {
+        toast.error("Username must be at least 3 characters long.");
+        return;
+      }
+      if (/\s/.test(email)) {
+        toast.error("Username cannot contain spaces.");
+        return;
+      }
+    }
     createChildren(
       {
         children: [
@@ -102,7 +117,7 @@ export default function AddChildPage() {
       },
       {
         onSuccess: () => {
-          toast.success(`${name}'s profile created! 🧙‍♂️`);
+          toast.success(`${name}'s profile created! `);
           router.push("/dashboard/children");
         },
         onError: () => {
@@ -116,10 +131,12 @@ export default function AddChildPage() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8 animate-fade-in">
       {/* Left: Form */}
       <div className="lg:col-span-2 bg-white rounded-[2rem] border border-dashboard-border p-6 shadow-sm">
+        {/* Commented out Invite Code mention
         <p className="text-sm text-dashboard-text-muted mb-4 leading-relaxed">
           Set up your child&apos;s profile. They&apos;ll use the generated
           invite code to link the Spell Wizards app to your portal.
         </p>
+        */}
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Avatar circles */}
@@ -132,13 +149,13 @@ export default function AddChildPage() {
                 {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-12 h-12 rounded-full bg-gray-200 animate-pulse" />)}
               </div>
             ) : (
-              <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar items-center">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  className="hidden" 
-                  ref={fileInputRef} 
-                  onChange={handleFileUpload} 
+              <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar items-center px-2 pt-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
                 />
                 <button
                   type="button"
@@ -149,33 +166,67 @@ export default function AddChildPage() {
                   <Plus size={24} className={isAddingAvatar ? "animate-spin" : ""} />
                 </button>
                 {avatars?.map((avatar) => (
-                  <div key={avatar.id} className="relative group shrink-0">
+                  <div key={avatar.id} className="relative group shrink-0 mt-2 mb-2">
                     <button
                       type="button"
                       onClick={() => setSelectedAvatarUrl(avatar.image_url)}
-                      className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200 ${
-                        selectedAvatarUrl === avatar.image_url
-                          ? "ring-4 ring-offset-2 ring-dashboard-purple scale-110 shadow-lg"
-                          : "opacity-60 hover:opacity-100 hover:scale-105 hover:ring-2 hover:ring-purple-200"
-                      }`}
+                      className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200 outline-none ${selectedAvatarUrl === avatar.image_url
+                        ? "ring-4 ring-offset-2 ring-dashboard-purple scale-105 shadow-lg"
+                        : "opacity-70 hover:opacity-100 hover:scale-105"
+                        }`}
                     >
-                      <Image src={avatar.image_url} alt={avatar.name || "Avatar"} fill className="object-cover rounded-full bg-purple-50" />
+                      <div className="relative w-full h-full rounded-full overflow-hidden bg-purple-100 border border-purple-200 flex items-center justify-center">
+                        <Image
+                          src={avatar.image_url}
+                          alt={avatar.name || "Avatar"}
+                          fill
+                          unoptimized
+                          className="object-cover"
+
+                        />
+                      </div>
                     </button>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        if (window.confirm("Are you sure you want to delete this avatar?")) {
-                          deleteAvatar(avatar.id);
-                          if (selectedAvatarUrl === avatar.image_url) {
-                            setSelectedAvatarUrl("");
+                        toast((t) => (
+                          <div className="flex flex-col gap-3 min-w-[200px]">
+                            <div>
+                              <p className="text-sm font-bold text-[#14062B]">Delete Avatar?</p>
+                              <p className="text-[11px] text-gray-500 mt-0.5">This will permanently remove this custom avatar.</p>
+                            </div>
+                            <div className="flex justify-end gap-2 pt-1">
+                              <button
+                                onClick={() => toast.dismiss(t.id)}
+                                className="px-3 py-1.5 text-[11px] font-bold text-gray-400 hover:text-gray-600 transition-colors"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => {
+                                  toast.dismiss(t.id);
+                                  deleteAvatar(avatar.id);
+                                }}
+                                className="px-4 py-1.5 text-[11px] font-bold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-sm active:scale-95"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        ), {
+                          duration: 5000,
+                          style: {
+                            padding: '16px',
+                            borderRadius: '20px',
+                            border: '1px solid #FEE2E2',
                           }
-                        }
+                        });
                       }}
-                      className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm hover:bg-red-600 hover:scale-110"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10 shadow-md hover:bg-red-600 hover:scale-110 border-2 border-white"
                     >
-                      <Trash2 size={12} />
+                      <Trash2 size={12} strokeWidth={3} />
                     </button>
                   </div>
                 ))}
@@ -234,11 +285,11 @@ export default function AddChildPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="text-sm font-semibold text-[#14062B] block mb-2">
-                Child&apos;s Email *
+                Child&apos;s Email or Username *
               </label>
               <input
-                type="email"
-                placeholder="e.g. arjun@email.com"
+                type="text"
+                placeholder="e.g. arjun_wizard or arjun@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-[#F5F3FF] border border-transparent rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-dashboard-purple/30 focus:border-dashboard-purple/40 transition-all placeholder:text-gray-400 font-medium"
@@ -269,11 +320,10 @@ export default function AddChildPage() {
                   key={level}
                   type="button"
                   onClick={() => setSpellingLevel(level)}
-                  className={`px-5 py-2 rounded-xl text-sm font-bold transition-all border ${
-                    spellingLevel === level
-                      ? "bg-dashboard-purple text-white border-dashboard-purple shadow-md shadow-purple-100"
-                      : "bg-[#F5F3FF] text-dashboard-text-muted border-transparent hover:border-dashboard-purple/20"
-                  }`}
+                  className={`px-5 py-2 rounded-xl text-sm font-bold transition-all border ${spellingLevel === level
+                    ? "bg-dashboard-purple text-white border-dashboard-purple shadow-md shadow-purple-100"
+                    : "bg-[#F5F3FF] text-dashboard-text-muted border-transparent hover:border-dashboard-purple/20"
+                    }`}
                 >
                   {level}
                 </button>
@@ -317,7 +367,7 @@ export default function AddChildPage() {
           >
             {isPending
               ? "Creating Profile..."
-              : "Create Profile & Generate Invite Code →"}
+              : "Create Profile "}
             {!isPending && (
               <ArrowRight
                 size={16}
@@ -336,10 +386,17 @@ export default function AddChildPage() {
             Preview
           </p>
           <div
-            className="w-24 h-24 mx-auto rounded-full flex items-center justify-center shadow-lg mb-5 transition-all duration-300 relative overflow-hidden bg-purple-100"
+            className="w-24 h-24 mx-auto rounded-full flex items-center justify-center shadow-lg mb-5 transition-all duration-300 relative overflow-hidden bg-purple-100 border border-purple-200"
           >
             {selectedAvatarUrl ? (
-              <Image src={selectedAvatarUrl} alt="Preview Avatar" fill className="object-cover" />
+              <Image
+                src={selectedAvatarUrl}
+                alt="Preview Avatar"
+                fill
+                unoptimized
+                className="object-cover"
+
+              />
             ) : name ? (
               <div className="w-full h-full bg-[#FFB820] flex items-center justify-center text-white">
                 <span className="text-4xl font-bold font-syne">
@@ -362,6 +419,7 @@ export default function AddChildPage() {
         </div>
 
         {/* How Linking Works */}
+        {/* Commented out How Linking Works (Invite Code)
         <div className="bg-white rounded-[2rem] border border-dashboard-border p-6 shadow-sm">
           <h4 className="text-sm font-bold text-[#14062B] mb-4">
             How Linking Works
@@ -382,32 +440,33 @@ export default function AddChildPage() {
             ))}
           </ul>
         </div>
+        */}
 
-       {/* Safe & Private */}
-<div className="bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
-  <div className="absolute -bottom-25 -right-5 w-60 h-60">
-    <Image
-      src="/intro-wizzard.svg"
-      alt="Safe & Private"
-      width={220}
-      height={220}
-      className="object-contain object-right-bottom"
-    />
-  </div>
+        {/* Safe & Private */}
+        <div className="bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
+          <div className="absolute -bottom-25 -right-5 w-60 h-60">
+            <Image
+              src="/intro-wizzard.svg"
+              alt="Safe & Private"
+              width={220}
+              height={220}
+              className="object-contain object-right-bottom"
+            />
+          </div>
 
-  <div className="relative z-10">
-    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-      <Lock size={22} />
-    </div>
-    <h4 className="text-base font-bold font-syne mb-2">
-      Safe &amp; Private
-    </h4>
-    <p className="text-xs text-purple-100 leading-relaxed">
-      No email or phone number needed for the child&apos;s account.
-      Everything is managed through your parent portal.
-    </p>
-  </div>
-</div>
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+              <Lock size={22} />
+            </div>
+            <h4 className="text-base font-bold font-syne mb-2">
+              Safe &amp; Private
+            </h4>
+            <p className="text-xs text-purple-100 leading-relaxed">
+              No email or phone number needed for the child&apos;s account.
+              Everything is managed through your parent portal.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

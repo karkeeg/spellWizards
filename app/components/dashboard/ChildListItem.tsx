@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Flame, Zap, Star, MoreVertical } from "lucide-react";
+import { Flame, Zap, Star, MoreVertical, Trash2 } from "lucide-react";
 import UserAvatar from "@/app/components/UserAvatar";
 import { ChildProfileResponse } from "@/services/child.service";
-import { useChildStats } from "@/hooks/use-child";
+import { useChildStats, useDeleteChild } from "@/hooks/use-child";
 import { useChildInsights } from "@/hooks/use-insights";
 import { TargetIcon, ClockIcon, StreakIcon } from "@/app/components/icons";
 import { CompassIcon } from "../icons/Compass";
+import toast from "react-hot-toast";
 
 interface ChildListItemProps {
   child: ChildProfileResponse;
@@ -40,6 +41,53 @@ export default function ChildListItem({ child }: ChildListItemProps) {
   const weeklyPractice = stats?.total_weekly_practice_minutes
     ? (stats.total_weekly_practice_minutes / 60).toFixed(1)
     : 0;
+
+  const [showMenu, setShowMenu] = useState(false);
+  const { mutate: deleteChildMutation, isPending: isDeleting } = useDeleteChild();
+
+  const handleDelete = () => {
+    toast((t) => (
+      <div className="flex flex-col gap-3 min-w-[240px]">
+        <div>
+          <p className="text-sm font-bold text-[#14062B]">Delete {child.name}?</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">This action cannot be undone and will remove all progress.</p>
+        </div>
+        <div className="flex justify-end gap-2 pt-1">
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1.5 text-[11px] font-bold text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              deleteChildMutation(child.child_id, {
+                onSuccess: () => {
+                  toast.success(`${child.name}'s profile deleted`);
+                },
+                onError: () => {
+                  toast.error("Failed to delete child profile");
+                }
+              });
+            }}
+            className="px-4 py-1.5 text-[11px] font-bold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-sm active:scale-95"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 6000,
+      style: {
+        padding: '16px',
+        borderRadius: '20px',
+        border: '1px solid #FEE2E2',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      }
+    });
+    setShowMenu(false);
+  };
 
   return (
     <div className="bg-white rounded-[2rem] border border-dashboard-border p-5 md:p-6 shadow-sm hover:shadow-lg transition-all duration-300 group relative">
@@ -97,6 +145,7 @@ export default function ChildListItem({ child }: ChildListItemProps) {
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 w-full xl:w-auto">
+{/* Commented out Invite Code part
           <div className="bg-[#FCFAFF] px-4 py-2.5 rounded-2xl border-2 border-dashed border-purple-100 flex flex-row sm:flex-col items-center justify-between sm:justify-center min-w-[120px] shrink-0">
             <div className="flex flex-col sm:items-center">
               <span className="text-[9px] text-dashboard-text-muted font-bold uppercase tracking-widest mb-0.5">Invite Code</span>
@@ -104,6 +153,7 @@ export default function ChildListItem({ child }: ChildListItemProps) {
             </div>
             <span className="text-[8px] text-gray-400 sm:mt-0.5 sm:block hidden">Share with child</span>
           </div>
+          */}
 
           <div className="flex flex-row sm:flex-col gap-2 w-full xl:w-32">
             <Link
@@ -120,9 +170,33 @@ export default function ChildListItem({ child }: ChildListItemProps) {
             </Link>
           </div>
 
-          <button className="p-2 text-gray-400 hover:text-dashboard-purple hover:bg-gray-50 rounded-lg absolute top-4 right-4 sm:top-6 sm:right-6 xl:static">
-            <MoreVertical size={18} />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setShowMenu(!showMenu)}
+              className="p-2 text-gray-400 hover:text-dashboard-purple hover:bg-gray-50 rounded-lg absolute top-4 right-4 sm:top-6 sm:right-6 xl:static"
+            >
+              <MoreVertical size={18} />
+            </button>
+            
+            {showMenu && (
+              <>
+                <div 
+                  className="fixed inset-0 z-10" 
+                  onClick={() => setShowMenu(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-20 py-1 overflow-hidden animate-in fade-in zoom-in duration-200">
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors font-bold disabled:opacity-50"
+                  >
+                    <Trash2 size={16} />
+                    {isDeleting ? "Deleting..." : "Delete Profile"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

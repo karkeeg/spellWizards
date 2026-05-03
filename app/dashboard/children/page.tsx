@@ -23,13 +23,6 @@ export default function MyChildrenPage() {
             <Plus size={18} />
             <span>Add Child</span>
           </Link>
-          <Link
-            href="/dashboard/delete-child"
-            className="flex items-center gap-2 text-red-500 px-5 py-2.5 rounded-xl border-2 border-red-500 text-sm"
-          >
-            <Trash2 size={18} />
-            <span>Delete Child Profile</span>
-          </Link>
         </div>
       </div>
 

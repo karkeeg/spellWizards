@@ -3,10 +3,14 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Footer: NextPage = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
   const pathname = usePathname();
-  const getHref = (hash: string) => pathname === '/' ? `#${hash}` : `/#${hash}`;
+  const getHref = (hash: string) => isMounted && pathname === "/" ? `#${hash}` : `/#${hash}`;
   return (
     <footer className="w-full bg-[#7C3AED] flex flex-col items-center pt-20 pb-10 px-6 md:px-12 xl:px-24 text-left text-white font-poppins">
       {/* Top section */}
@@ -32,7 +36,8 @@ const Footer: NextPage = () => {
             <a href={getHref("features")} className="hover:text-white transition-all hover:translate-x-1 inline-block">Features</a>
             <a href={getHref("how-it-works")} className="hover:text-white transition-all hover:translate-x-1 inline-block">How It Works</a>
             <a href={getHref("pricing")} className="hover:text-white transition-all hover:translate-x-1 inline-block">Pricing</a>
-            <a href="/updates" className="hover:text-white transition-all hover:translate-x-1 inline-block">Release Notes</a>
+            <a href={getHref("faqs")} className="hover:text-white transition-all hover:translate-x-1 inline-block">FAQs</a>
+            <a href={getHref("contact")} className="hover:text-white transition-all hover:translate-x-1 inline-block">Contact Us</a>
           </div>
         </div>
 
@@ -42,8 +47,6 @@ const Footer: NextPage = () => {
             <h3 className="font-bold text-lg font-syne">Company</h3>
             <div className="flex flex-col gap-4 text-white/60 text-[15px]">
               <a href="/about" className="hover:text-white transition-all hover:translate-x-1 inline-block">About Us</a>
-              <a href="/blog" className="hover:text-white transition-all hover:translate-x-1 inline-block">Blog</a>
-              <a href="/careers" className="hover:text-white transition-all hover:translate-x-1 inline-block">Careers</a>
             </div>
           </div>
         </div>
@@ -52,9 +55,8 @@ const Footer: NextPage = () => {
         <div className="flex flex-col gap-6">
           <h3 className="font-bold text-lg font-syne">Support</h3>
           <div className="flex flex-col gap-4 text-white/60 text-[15px]">
-            <a href="/help" className="hover:text-white transition-all hover:translate-x-1 inline-block">Help Center</a>
-            <a href="/faqs" className="hover:text-white transition-all hover:translate-x-1 inline-block">FAQs</a>
-            {/* <a href="/privacy-policy" className="hover:text-white transition-all hover:translate-x-1 inline-block">Privacy Policy</a> */}
+            <a href={getHref("faqs")} className="hover:text-white transition-all hover:translate-x-1 inline-block">FAQs</a>
+            <a href={getHref("contact")} className="hover:text-white transition-all hover:translate-x-1 inline-block">Help Center</a>
             <a href="/terms-condition" className="hover:text-white transition-all hover:translate-x-1 inline-block">Terms of Service</a>
             <a href="/pricing-policy" className="hover:text-white transition-all hover:translate-x-1 inline-block">Pricing Policy</a>
           </div>
@@ -79,8 +81,7 @@ const Footer: NextPage = () => {
 
           <div className="flex gap-6 text-[13px] text-white/40">
             <a href="/privacy-policy" className="hover:text-white">Privacy</a>
-            <a href="/terms" className="hover:text-white">Terms</a>
-            <a href="/cookies" className="hover:text-white">Cookies</a>
+            <a href="/terms-condition" className="hover:text-white">Terms</a>
           </div>
         </div>
       </div>

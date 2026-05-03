@@ -33,21 +33,23 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
   const { data: children } = useChildren();
   const { mutate: sendMessage, isPending } = useChatbot();
   
-  const [selectedChildId, setSelectedChildId] = useState<string>("");
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [selectedChildId, setSelectedChildId] = useState<string>("general");
+  const [messagesByContext, setMessagesByContext] = useState<Record<string, Message[]>>({});
   const [inputText, setInputText] = useState("");
+
+  const currentMessages = messagesByContext[selectedChildId] || initialMessages;
 
   // Set default child if children are loaded
   React.useEffect(() => {
     if (children && children.length > 0 && !selectedChildId) {
-      setSelectedChildId(children[0].child_id);
+      setSelectedChildId("general");
     }
   }, [children, selectedChildId]);
 
   const handleSend = () => {
     if (!inputText.trim()) return;
     if (!selectedChildId) {
-      toast.error("Please select a child first");
+      toast.error("Please select a chat mode");
       return;
     }
     
@@ -58,11 +60,14 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
     
-    setMessages(prev => [...prev, userMessage]);
+    setMessagesByContext(prev => ({
+      ...prev,
+      [selectedChildId]: [...(prev[selectedChildId] || initialMessages), userMessage]
+    }));
     setInputText("");
     
     sendMessage({
-      childId: selectedChildId,
+      childId: selectedChildId === "general" ? null : selectedChildId,
       data: { parent_input: inputText }
     }, {
       onSuccess: (data) => {
@@ -72,7 +77,10 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
           sender: "bot",
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
-        setMessages(prev => [...prev, botResponse]);
+        setMessagesByContext(prev => ({
+          ...prev,
+          [selectedChildId]: [...(prev[selectedChildId] || initialMessages), botResponse]
+        }));
       },
       onError: (error) => {
         console.error("Chat error:", error);
@@ -101,7 +109,7 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
                 onChange={(e) => setSelectedChildId(e.target.value)}
                 className="appearance-none bg-[#F3E8FF] border border-dashboard-purple/20 rounded-full px-4 py-1.5 pr-8 text-sm font-bold text-dashboard-purple cursor-pointer focus:outline-none focus:ring-2 focus:ring-dashboard-purple/20 transition-all hover:bg-[#EDE9FE]"
               >
-                {!children?.length && <option value="">No children</option>}
+                <option value="general">General Chat</option>
                 {children?.map((child) => (
                   <option key={child.child_id} value={child.child_id}>
                     {child.name}
@@ -120,7 +128,7 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
 
         {/* Chat Messages */}
         <div className="flex-1 p-4 md:p-6 space-y-6 overflow-y-auto scrollbar-hide bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-purple-50/50 via-transparent to-transparent">
-          {messages.map((msg) => (
+          {currentMessages.map((msg) => (
             <div 
               key={msg.id} 
               className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
@@ -137,7 +145,9 @@ export default function AskWizDrawer({ isOpen, onClose }: AskWizDrawerProps) {
                 {msg.sender === "user" && (
                   <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden">
                     <div className="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-[10px] font-bold">
-                      {children?.find(c => c.child_id === selectedChildId)?.name[0] || "U"}
+                      {selectedChildId === "general" 
+                        ? "P" 
+                        : children?.find(c => c.child_id === selectedChildId)?.name[0] || "U"}
                     </div>
                   </div>
                 )}

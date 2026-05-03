@@ -6,6 +6,10 @@ export interface AuthRequest {
   password: string;
 }
 
+export interface RegisterRequest extends AuthRequest {
+  full_name: string;
+}
+
 export interface AuthResponse {
   access_token: string;
   token_type: string;
@@ -19,6 +23,16 @@ export const authenticateParent = async (
 ): Promise<AuthResponse> => {
   const response = await axiosInstance.post<AuthResponse>(
     "/auth/parent/login",
+    data,
+  );
+  return response.data;
+};
+
+export const registerParent = async (
+  data: RegisterRequest,
+): Promise<AuthResponse> => {
+  const response = await axiosInstance.post<AuthResponse>(
+    "/auth/parent/register",
     data,
   );
   return response.data;

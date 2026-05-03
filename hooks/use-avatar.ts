@@ -15,7 +15,7 @@ export function useAddAvatar() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (payload: {name: string, image_url: string}) => addAvatar(payload),
+    mutationFn: (payload: {name: string, file: File}) => addAvatar(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["avatars"] });
       toast.success("Avatar added successfully");

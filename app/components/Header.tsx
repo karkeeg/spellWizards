@@ -2,15 +2,17 @@
 
 import type { NextPage } from "next";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const Navbar: NextPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
   const pathname = usePathname();
-  const getHref = (hash: string) =>
-    pathname === "/" ? `#${hash}` : `/#${hash}`;
+  const getHref = (hash: string) => isMounted && pathname === "/" ? `#${hash}` : `/#${hash}`;
 
   return (
     <nav className="w-full fixed top-0 left-0 z-50 backdrop-blur-[25px] bg-white/40 border-b border-purple-600/10 transition-all duration-300">

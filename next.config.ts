@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "upload.wikimedia.org",
       },
+      {
+        protocol: "https",
+        hostname: "spellwizards.s3.us-east-1.amazonaws.com",
+      },
     ],
   },
 };

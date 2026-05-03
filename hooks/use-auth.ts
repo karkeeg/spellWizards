@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   authenticateParent,
+  registerParent,
   AuthRequest,
   AuthResponse,
 } from "@/services/auth.service";
@@ -31,6 +32,30 @@ export function useLogin() {
     onError: (error) => {
       console.error("Login failed:", error);
       toast.error(error.message || "Invalid email or password. Please try again.");
+    },
+  });
+}
+
+export function useSignup() {
+  const { login } = useAuth();
+  const router = useRouter();
+
+  return useMutation<AuthResponse, Error, any>({
+    mutationFn: registerParent,
+
+    onSuccess: (data) => {
+      login(data);
+      toast.success("Account created successfully! ✨");
+      router.push("/onboarding");
+    },
+
+    onError: (error: any) => {
+      console.error("Signup failed:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Signup failed. Please try again."
+      );
     },
   });
 }

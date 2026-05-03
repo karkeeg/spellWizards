@@ -71,6 +71,10 @@ export const updateChild = async (
   return response.data;
 };
 
+export const deleteChild = async (childId: string): Promise<void> => {
+  await axiosInstance.delete(`/parent/me/children/${childId}`);
+};
+
 export const getChildren = async (): Promise<ChildProfileResponse[]> => {
   const response = await axiosInstance.get<ChildProfileResponse[]>(
     "/parent/me/children",

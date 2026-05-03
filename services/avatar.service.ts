@@ -12,7 +12,7 @@ export interface AvatarItem {
 
 export interface AddAvatarPayload {
   name: string;
-  image_url: string;
+  file: File;
   sort_order?: number;
   is_active?: boolean;
 }
@@ -25,9 +25,21 @@ export const getAvatars = async (): Promise<AvatarItem[]> => {
 };
 
 export const addAvatar = async (payload: AddAvatarPayload): Promise<AvatarItem> => {
-  console.log("Adding avatar JSON:", payload.name);
+  const { name, file, sort_order = 0, is_active = true } = payload;
+  console.log("Adding avatar:", name);
   try {
-    const response = await axiosInstance.post<AvatarItem>("/admin-parent/avatars", payload);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axiosInstance.post<AvatarItem>(
+      `/admin-parent/avatars?name=${encodeURIComponent(name)}&sort_order=${sort_order}&is_active=${is_active}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     console.log("Add avatar response:", response.data);
     return response.data;
   } catch (error: any) {

@@ -35,16 +35,16 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       </main>
 
       {/* Footer */}
-      <footer className="p-8 flex flex-col md:flex-row justify-center gap-24 text-sm text-gray-500 z-10">
+      <footer className="p-8 flex flex-col md:flex-row justify-center gap-12 md:gap-24 text-sm text-gray-400 z-10 font-medium">
         <div className="flex gap-8">
-          <a href="#" className="hover:underline">
+          <a href="/terms-condition" className="hover:text-[#7C3AED] transition-colors">
             Terms of service
           </a>
-          <a href="#" className="hover:underline">
+          <a href="/privacy-policy" className="hover:text-[#7C3AED] transition-colors">
             Privacy policy
           </a>
         </div>
-        <span>@2026 Spellwizards</span>
+        <span>© 2026 Spell Wizards</span>
       </footer>
     </div>
   );

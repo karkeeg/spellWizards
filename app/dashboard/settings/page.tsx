@@ -8,6 +8,7 @@ import { useAvatars } from "@/hooks/use-avatar";
 import Link from "next/link";
 import Image from "next/image";
 import UserAvatar from "@/app/components/UserAvatar";
+import toast from "react-hot-toast";
 
 export default function SettingsPage() {
   const { data: profile, isLoading } = useParentProfile();
@@ -392,7 +393,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-[#8E78B3] ml-1">Username (Login ID)</label>
+                  <label className="text-sm font-semibold text-[#8E78B3] ml-1">Email or Username (Login ID)</label>
                   <input
                     type="text"
                     value={childForm.username}
@@ -456,9 +457,29 @@ export default function SettingsPage() {
                 <button
                   onClick={() => {
                     if (childForm.newPassword && childForm.newPassword !== childForm.confirmPassword) {
-                      alert("Passwords do not match");
+                      toast.error("Passwords do not match");
                       return;
                     }
+
+                    const identifier = childForm.username;
+                    const isEmail = identifier.includes("@");
+                    if (isEmail) {
+                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                      if (!emailRegex.test(identifier)) {
+                        toast.error("Please enter a valid email address.");
+                        return;
+                      }
+                    } else {
+                      if (identifier.length < 3) {
+                        toast.error("Username must be at least 3 characters long.");
+                        return;
+                      }
+                      if (/\s/.test(identifier)) {
+                        toast.error("Username cannot contain spaces.");
+                        return;
+                      }
+                    }
+
                     updateChildMutation.mutate({
                       childId: selectedChildId,
                       data: {
